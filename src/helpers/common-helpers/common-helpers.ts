@@ -1,8 +1,5 @@
 import fs from "fs";
 import path from "path";
-import Mongoose from "mongoose";
-import {floKaptureService} from "../../base-repositories/flokapture-db-service";
-import { universeStringExtensions } from "../universe-basic/extensions/universe-string-extensions";
 
 class CommonHelper {
     constructor() { }

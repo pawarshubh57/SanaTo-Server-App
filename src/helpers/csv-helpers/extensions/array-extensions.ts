@@ -1,5 +1,5 @@
 import { LineDetails } from "../../models";
-export default class UniverseArrayExtensions extends Array {
+export default class ArrayExtensions extends Array {
     public _globalId: number;
     constructor() {
         super(); this._globalId = 1;
@@ -75,6 +75,6 @@ export default class UniverseArrayExtensions extends Array {
     };
 };
 
-const universeArrayExtensions: UniverseArrayExtensions = new UniverseArrayExtensions();
+const arrayExtensions: ArrayExtensions = new ArrayExtensions();
 
-export { universeArrayExtensions, UniverseArrayExtensions };
+export { arrayExtensions, ArrayExtensions };
