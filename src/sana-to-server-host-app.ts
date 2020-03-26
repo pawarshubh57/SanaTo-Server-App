@@ -22,10 +22,10 @@ Promise.resolve(mongoConnection()).then(() => {
     App.use(urlencoded({ limit: '60mb', extended: true }));
     App.use(Cors());
     App.get('/get-status', function (request, response) {
-        response.status(200).end('Flokapture Server Application is up and running.!!!');
+        response.status(200).end('SonaTo Server Application is up and running.!!!');
     });
     App.get('', function (request, response) {
-        response.status(200).end('Flokapture Server Application is up and running!!!');
+        response.status(200).end('SonaTot Server Application is up and running!!!');
     });
 
     var ExpressPath: any = require('express-path');
@@ -52,7 +52,7 @@ Promise.resolve(mongoConnection()).then(() => {
             console.log("==========================================================================");
         }
         console.log('=========================================================================');
-        console.log(`Flokapture Server Host Application is up running on port: ${portNumber}`);
+        console.log(`SonaTo Server Host Application is up running on port: ${portNumber}`);
         console.log(JSON.stringify(address));
         console.log('=========================================================================');
     });
