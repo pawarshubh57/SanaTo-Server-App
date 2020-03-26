@@ -3,7 +3,7 @@ import path from 'path';
 import { stringExtensions } from '..';
 
 class CsvFileParsing {
-  public parseCsv = function(filePath: string, delimiter: string) : boolean{
+  public parseCsv = function(filePath: string, delimiter: string): boolean {
     const splitRegExp = new RegExp(
       `\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`,
       'ig'
@@ -38,6 +38,17 @@ class CsvFileParsing {
       console.log(error);
       return false;
     }
+  };
+  public getHeaders = function(filePath: string, delimiter: string): Array<string> {
+    const splitRegExp = new RegExp(
+      `\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`,
+      'ig'
+    );
+    const readStream = fs.readFileSync(filePath);
+    //const entityName = stringExtensions.fileNameWithoutExtension(path.win32.basename(filePath));
+    const descLines = readStream.toString().split('\n');
+    const headers = descLines.shift().split(splitRegExp);
+    return headers;
   };
 }
 
