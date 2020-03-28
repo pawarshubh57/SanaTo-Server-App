@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import Mongoose from "mongoose";
 const _: any = require('lodash');
-import { floKaptureService } from "../base-repositories/flokapture-db-service";
+import { sanaToService } from "../base-repositories/sana-to-db-service";
 
 var createUser = function (request: Request, response: Response) {
     var user = request.body;
-    var UserMaster = floKaptureService.UserMaster.getModel();
+    var UserMaster = sanaToService.UserMaster.getModel();
     var newUser: any = new UserMaster(user);
     newUser
         .save()
@@ -23,7 +23,7 @@ var createUser = function (request: Request, response: Response) {
 
 const userLogin = function (request: Request, response: Response) {
     var body = _.pick(request.body, ['UserName', 'Password']);
-    var UserMaster: any = floKaptureService.UserMaster.getModel();
+    var UserMaster: any = sanaToService.UserMaster.getModel();
     UserMaster.findByCredentials(body.UserName, body.Password)
         .then(function (user: any) {
             response.setHeader('x-auth-token', user.Tokens[0].token);
