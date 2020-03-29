@@ -48,7 +48,7 @@ Promise.resolve(mongoConnection())
         console.log('==========================================================================');
       }
       console.log('=========================================================================');
-      console.log(`Flokapture Server Host Application is up running on port: ${portNumber}`);
+      console.log(`SanaTo Server Host Application is up running on port: ${portNumber}`);
       console.log(JSON.stringify(address));
       console.log('=========================================================================');
     });
