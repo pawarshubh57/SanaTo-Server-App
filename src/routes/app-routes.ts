@@ -8,6 +8,15 @@ const parseCsvRoutes: string[][] = [
   ['api/parse-csv/upload-file', 'parse-csv#uploadFiles', 'post'],
   ['api/parse-csv/add-data-model', 'parse-csv#addDataTrainModel', 'post'],
 ];
-var appRoutes: any[] = Array.prototype.concat(homeRoutes, parseCsvRoutes, userMasterRoutes);
+const staticModelRoutes: string[][] = [
+  ['api/static-model/add-model', 'static-model-validation#addStaticModel', 'post'],
+  ['api/static-model/get-model', 'static-model-validation#getStaticModel', 'get'],
+];
+var appRoutes: any[] = Array.prototype.concat(
+  homeRoutes,
+  parseCsvRoutes,
+  userMasterRoutes,
+  staticModelRoutes
+);
 
 module.exports = appRoutes;

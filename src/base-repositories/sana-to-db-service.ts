@@ -9,6 +9,8 @@ import {
   UserMaster,
   DataTrainedModel,
   DataTrainedSchema,
+  StaticValidationSchema,
+  StaticValidationModel,
 } from '../models';
 
 import { Db, MongoClient } from 'mongodb';
@@ -38,6 +40,10 @@ class SanaToService {
   public DataTrainModel = new BaseRepository<DataTrainedModel>({
     collectionName: 'DataTrainedModel',
     schema: DataTrainedSchema,
+  });
+  public StaticModel = new BaseRepository<StaticValidationModel>({
+    collectionName: 'StaticSchemaValidation',
+    schema: StaticValidationSchema,
   });
 }
 
