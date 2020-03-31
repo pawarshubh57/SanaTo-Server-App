@@ -40,7 +40,7 @@ Promise.resolve(mongoConnection())
     App.use(Express.static(uploadPath));
     var expressHttpsServer = https.createServer(httpsOptions, App);
     var portNumber = process.env.PORT || 3000;
-    App.listen(portNumber, function() {
+    expressHttpsServer.listen(portNumber, function() {
       var address: any = this.address();
       if (!globalAny.dbConnection) {
         console.log('==========================================================================');

@@ -13,7 +13,6 @@ import {
 
 import { Db, MongoClient } from 'mongodb';
 import Mongoose from 'mongoose';
-
 const globalAny: any = global;
 const dbConnection: Mongoose.Connection = globalAny.dbConnection as Mongoose.Connection;
 const mongoDatabase: Db = globalAny.mongoDbConnection as Db;
