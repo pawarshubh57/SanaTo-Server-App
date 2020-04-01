@@ -41,10 +41,7 @@ class CsvFileParsing {
   };
 
   public getHeaders = function(filePath: string, delimiter: string): Array<string> {
-    const splitRegExp = new RegExp(
-      `\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`,
-      'ig'
-    );
+    const splitRegExp = new RegExp(`\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
     const readStream = fs.readFileSync(filePath);
     //const entityName = stringExtensions.fileNameWithoutExtension(path.win32.basename(filePath));
     const descLines = readStream.toString().split('\n');
@@ -57,10 +54,7 @@ class CsvFileParsing {
     dateColumn: string,
     propCol: string
   ): string {
-    const splitRegExp = new RegExp(
-      `\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`,
-      'ig'
-    );
+    const splitRegExp = new RegExp(`\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
     const readStream = fs.readFileSync(filePath);
     const descLines = readStream.toString().split('\n');
     const headers: Array<string> = descLines.shift().split(splitRegExp);
@@ -86,7 +80,7 @@ class CsvFileParsing {
         var dateB = Date.parse(b[dateColumn]);
         return dateA - dateB;
       });
-     // console.log(temp);
+      // console.log(temp);
       let inc: number = 0;
       let dec: number = 0;
       for (let i = 0; i < temp.length - 1; i++) {
@@ -95,7 +89,7 @@ class CsvFileParsing {
         exp1 < exp2 ? inc++ : dec++;
       }
       var proportionality = inc > dec ? 'Directly' : 'Inversely';
-      console.log('Propotionality Value', proportionality);
+      console.log('Propotionality Value: ', proportionality);
       return proportionality;
     } catch (ex) {
       console.log(ex);
