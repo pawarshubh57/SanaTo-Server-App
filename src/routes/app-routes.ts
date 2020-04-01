@@ -11,6 +11,7 @@ const parseCsvRoutes: string[][] = [
 const staticModelRoutes: string[][] = [
   ['api/static-model/add-model', 'static-model-validation#addStaticModel', 'post'],
   ['api/static-model/get-model', 'static-model-validation#getStaticModel', 'get'],
+  ['api/static-model/validate-data', 'static-model-validation#validateData', 'post'],
 ];
 var appRoutes: any[] = Array.prototype.concat(
   homeRoutes,

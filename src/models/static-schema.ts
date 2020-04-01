@@ -11,12 +11,12 @@ const StaticValidationSchema: Mongoose.Schema<StaticValidationModel> = new Mongo
   DateField: {
     type: [
       new Mongoose.Schema<DateField>({
-        Format: {
+        format: {
           type: String,
           required: true,
           trim: true,
         },
-        DateColumn: {
+        dateColumn: {
           type: String,
           required: true,
           trim: true,
@@ -28,12 +28,14 @@ const StaticValidationSchema: Mongoose.Schema<StaticValidationModel> = new Mongo
   OtherFields: {
     type: [
       new Mongoose.Schema<OtherFields>({
-        FieldName: { type: String, required: true, trim: true },
-        Type: { type: String, required: true, trim: true, enum: ['String', 'Number'] },
-        MaxValue: { type: Number, required: false, default: 0 },
-        MinValue: { type: Number, required: false, default: 0 },
-        Formula: { type: String, trim: true, required: false, default: null },
-        CanBeNull: { type: Boolean, required: true },
+        fieldName: { type: String, required: true, trim: true },
+        type: { type: String, required: true, trim: true, enum: ['String', 'Number'] },
+        maxValue: { type: Number, required: false, default: 0 },
+        minValue: { type: Number, required: false, default: 0 },
+        formula: { type: String, trim: true, required: false, default: null },
+        canBeNull: { type: Boolean, required: true },
+        minLength: { type: Number, required: false, default: 0 },
+        maxLength: { type: Number, required: false, default: 0 },
       }),
     ],
     required: true,
@@ -68,17 +70,25 @@ class StaticValidationModel extends Mongoose.Document {
 }
 
 class DateField {
-  public DateColumn: string;
-  public Format: string;
+  public dateColumn: string;
+  public format: string;
 }
 
 class OtherFields {
-  public FieldName: string;
-  public Type: string;
-  public MaxValue?: number;
-  public MinValue?: number;
-  public Formula?: string;
-  public CanBeNull: boolean;
+  public fieldName: string;
+  public type: string;
+  public maxValue?: number;
+  public minValue?: number;
+  public formula?: string;
+  public canBeNull: boolean;
+  public minLength?: number;
+  public maxLength?: number;
 }
 
-export { StaticValidationModel, StaticValidationSchema };
+class ErrorField {
+  public column: string;
+  public value: string | number | Date;
+  public msg: string;
+  public error?: any;
+}
+export { StaticValidationModel, StaticValidationSchema, DateField, OtherFields, ErrorField };

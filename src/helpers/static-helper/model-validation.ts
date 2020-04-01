@@ -1,0 +1,109 @@
+import { sanaToService } from '../../base-repositories/sana-to-db-service';
+import { DateField, OtherFields, ErrorField } from '../../models';
+import moment from 'moment';
+class ModelValidation {
+  public validateObj = async function(body: any): Array<ErrorField> {
+    const errors: Array<ErrorField> = [];
+    const primaryKeyFields: Array<string> = body.PrimaryKeyFields;
+    const data: object = body.Data as object;
+    const keys = Object.keys(data);
+    const filter: object = {
+      PrimaryKeyFields: { $in: primaryKeyFields },
+      $and: [{ Columns: { $all: keys } }, { Columns: { $size: keys.length } }],
+    };
+    const model = await sanaToService.StaticModel.getItem(filter);
+
+    const dates: Array<DateField> = model.DateField;
+    const others: Array<OtherFields> = model.OtherFields;
+    console.log(model);
+    try {
+      for (let d in data) {
+        dates.find((v: DateField) => {
+          if (v.dateColumn === d) {
+            console.log('Date Field', v);
+            // first check whether valid date or not
+            var date: Date = data[d];
+            var testDate = Date.parse(data[d]);
+            // check format of Date
+            var isValidDate = moment(date, v.format, true).isValid();
+            console.log('isValidDate and format ', isValidDate);
+            if (!isValidDate) {
+              errors.push({
+                column: v.dateColumn,
+                value: date,
+                msg: `${v.dateColumn}  must be in format ${v.format}`,
+              });
+            }
+          }
+        });
+
+        others.find((o: OtherFields) => {
+          if (o.fieldName === d) {
+            if (o.type === 'String') {
+              var value: string = data[d];
+              //check for minLength and maxLength
+              var typeCheck1 = typeof value === 'string' ? true : false;
+              if (!typeCheck1) {
+                errors.push({
+                  column: o.fieldName,
+                  value: value,
+                  msg: `${o.fieldName} is not of type ${o.type}`,
+                });
+              }
+              var nullCheck = (value === null) === o.canBeNull ? true : false;
+              if (!nullCheck) {
+                errors.push({
+                  column: o.fieldName,
+                  value: value,
+                  msg: `${o.fieldName} can not null`,
+                });
+              }
+              var lengthCheck =
+                (o.maxLength === 0 && o.minLength === 0) ||
+                (value.length <= o.maxLength && value.length >= o.minLength)
+                  ? true
+                  : false;
+              if (!lengthCheck) {
+                errors.push({
+                  column: o.fieldName,
+                  value: value,
+                  msg: `Length of ${o.fieldName} must be between ${o.maxLength} and ${o.minLength}`,
+                });
+              }
+            } else if (o.type === 'Number') {
+              //check for minValue and maxValue
+              var val: number = Number.parseInt(data[d]);
+              // if (NaN)
+              var typeCheck = typeof val === 'number' ? true : false;
+              if (!typeCheck) {
+                errors.push({
+                  column: o.fieldName,
+                  value: val,
+                  msg: `${val} is not of type ${o.type}`,
+                });
+              }
+              var valueCheck =
+                (o.minValue === 0 && o.maxValue === 0) || (val <= o.maxValue && val >= o.minValue)
+                  ? true
+                  : false;
+              if (!valueCheck) {
+                errors.push({
+                  column: o.fieldName,
+                  value: val,
+                  msg: `Value must be between ${o.minValue} and ${o.maxValue}`,
+                });
+              }
+            }
+          }
+        });
+      }
+      console.log('Final response', errors);
+      return errors;
+    } catch (error) {
+      console.log();
+    }
+  };
+}
+
+const modelValidation: ModelValidation = new ModelValidation();
+export { modelValidation, ModelValidation };
