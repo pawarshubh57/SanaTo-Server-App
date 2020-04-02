@@ -2,6 +2,10 @@ import fs from "fs";
 import path from "path";
 
 class CommonHelper {
+    /**
+     *Creates an instance of CommonHelper.
+     * @memberof CommonHelper
+     */
     constructor() { }
     changeExtensions = function (rootPath: string, ext: string, dirToLook: string[], dirToSkip: string[] = []) {
         if (!fs.existsSync(rootPath)) return;
@@ -34,6 +38,12 @@ class CommonHelper {
             });
         }
     };
+    /**
+     *
+     *
+     * @protected
+     * @memberof CommonHelper
+     */
     protected changeExtension = function (dirPath: string, ext: string): void {
         var allFiles = fs.readdirSync(dirPath);
         allFiles.forEach(function (file) {
