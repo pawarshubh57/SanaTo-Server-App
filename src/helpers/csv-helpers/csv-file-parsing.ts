@@ -4,10 +4,8 @@ import { stringExtensions } from '..';
 
 class CsvFileParsing {
   public parseCsv = function(filePath: string, delimiter: string): boolean {
-    const splitRegExp = new RegExp(
-      `\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`,
-      'ig'
-    );
+    const splitRegExp = 
+    new RegExp(`\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
     const readStream = fs.readFileSync(filePath);
     const entityName = stringExtensions.fileNameWithoutExtension(path.win32.basename(filePath));
     const descLines = readStream.toString().split('\n');

@@ -1,11 +1,12 @@
 import { sanaToService } from '../../base-repositories/sana-to-db-service';
 import { DateField, OtherFields, ErrorField } from '../../models';
 import moment from 'moment';
+
 class ModelValidation {
-  public validateObj = async function(body: any): Array<ErrorField> {
+  public validateObj = async function(body: any): Promise<Array<ErrorField>> {
     const errors: Array<ErrorField> = [];
     const primaryKeyFields: Array<string> = body.PrimaryKeyFields;
-    const data: object = body.Data as object;
+    const data: any = body.Data as any;
     const keys = Object.keys(data);
     const filter: object = {
       PrimaryKeyFields: { $in: primaryKeyFields },
@@ -23,7 +24,7 @@ class ModelValidation {
             console.log('Date Field', v);
             // first check whether valid date or not
             var date: Date = data[d];
-            var testDate = Date.parse(data[d]);
+            // var testDate = Date.parse(data[d]);
             // check format of Date
             var isValidDate = moment(date, v.format, true).isValid();
             console.log('isValidDate and format ', isValidDate);
@@ -72,7 +73,8 @@ class ModelValidation {
               }
             } else if (o.type === 'Number') {
               //check for minValue and maxValue
-              var val: number = Number.parseInt(data[d]);
+              try {
+                var val: number = Number.parseInt(data[d]);
               // if (NaN)
               var typeCheck = typeof val === 'number' ? true : false;
               if (!typeCheck) {
@@ -82,6 +84,15 @@ class ModelValidation {
                   msg: `${val} is not of type ${o.type}`,
                 });
               }
+              } catch (error) {
+                errors.push({
+                  column: o.fieldName,
+                  value: val,
+                  msg: `${val} is not of type ${o.type}`,
+                  error
+                });
+              }
+              
               var valueCheck =
                 (o.minValue === 0 && o.maxValue === 0) || (val <= o.maxValue && val >= o.minValue)
                   ? true
@@ -101,7 +112,8 @@ class ModelValidation {
       return errors;
     } catch (error) {
       console.log();
-    }
+      return errors;
+    }    
   };
 }
 
