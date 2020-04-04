@@ -22,7 +22,6 @@ Promise.resolve(mongoConnection())
     App.use(json({ limit: '60mb' }));
     App.use(urlencoded({ limit: '60mb', extended: true }));
     App.use(Cors());
-   
 
     var ExpressPath: any = require('express-path');
     var AppRoutes: any = require('./routes/app-routes');
@@ -40,7 +39,8 @@ Promise.resolve(mongoConnection())
     App.use(Express.static(uploadPath));
     var expressHttpsServer = https.createServer(httpsOptions, App);
     var portNumber = process.env.PORT || 3000;
-    expressHttpsServer.listen(portNumber, function() {
+
+    App.listen(portNumber, function() {
       var address: any = this.address();
       if (!globalAny.dbConnection) {
         console.log('==========================================================================');
