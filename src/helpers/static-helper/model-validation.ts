@@ -9,7 +9,7 @@ class ModelValidation {
     const data: any = body.Data as any;
     const keys = Object.keys(data);
     const filter: object = {
-      PrimaryKeyFields: { $in: primaryKeyFields },
+      PrimaryKeyFields: { $all: primaryKeyFields },
       $and: [{ Columns: { $all: keys } }, { Columns: { $size: keys.length } }],
     };
     const model = await sanaToService.StaticModel.getItem(filter);
@@ -23,11 +23,15 @@ class ModelValidation {
           if (v.dateColumn === d) {
             console.log('Date Field', v);
             // first check whether valid date or not
-            var date: Date = data[d];
-            // var testDate = Date.parse(data[d]);
+            var date: any = data[d];
             // check format of Date
-            var isValidDate = moment(date, v.format, true).isValid();
-            console.log('isValidDate and format ', isValidDate);
+            var testDate = moment(date);
+            // var testFormat = moment.utc().format(v.format);
+            var mDate = moment(date, v.format, true);
+            var rtt = mDate.isValid();
+            console.log(rtt);
+            var isValidDate = moment.parseZone(testDate, v.format, true).isValid();
+            // var isValidDate = moment(date, v.format).format(v.format) === date ? true : false;//.isValid();
             if (!isValidDate) {
               errors.push({
                 column: v.dateColumn,
@@ -73,36 +77,35 @@ class ModelValidation {
               }
             } else if (o.type === 'Number') {
               //check for minValue and maxValue
-              try {
-                var val: number = Number.parseInt(data[d]);
-              // if (NaN)
-              var typeCheck = typeof val === 'number' ? true : false;
-              if (!typeCheck) {
+              // Kuth ahes g tu??
+
+              var val: number = Number.parseInt(data[d]);
+              if (isNaN(val)) {
                 errors.push({
                   column: o.fieldName,
-                  value: val,
-                  msg: `${val} is not of type ${o.type}`,
+                  value: data[d],
+                  msg: `${o.fieldName} must be Number`,
                 });
-              }
-              } catch (error) {
-                errors.push({
-                  column: o.fieldName,
-                  value: val,
-                  msg: `${val} is not of type ${o.type}`,
-                  error
-                });
-              }
-              
-              var valueCheck =
-                (o.minValue === 0 && o.maxValue === 0) || (val <= o.maxValue && val >= o.minValue)
-                  ? true
-                  : false;
-              if (!valueCheck) {
-                errors.push({
-                  column: o.fieldName,
-                  value: val,
-                  msg: `Value must be between ${o.minValue} and ${o.maxValue}`,
-                });
+              } else {
+                var typeCheck = typeof val === 'number' ? true : false;
+                if (!typeCheck) {
+                  errors.push({
+                    column: o.fieldName,
+                    value: val,
+                    msg: `${val} is not of type ${o.type}`,
+                  });
+                }
+                var valueCheck =
+                  (o.minValue === 0 && o.maxValue === 0) || (val <= o.maxValue && val >= o.minValue)
+                    ? true
+                    : false;
+                if (!valueCheck) {
+                  errors.push({
+                    column: o.fieldName,
+                    value: val,
+                    msg: `Value must be between ${o.minValue} and ${o.maxValue}`,
+                  });
+                }
               }
             }
           }
@@ -113,7 +116,7 @@ class ModelValidation {
     } catch (error) {
       console.log();
       return errors;
-    }    
+    }
   };
 }
 

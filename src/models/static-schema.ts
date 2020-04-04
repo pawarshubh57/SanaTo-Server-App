@@ -36,6 +36,8 @@ const StaticValidationSchema: Mongoose.Schema<StaticValidationModel> = new Mongo
         canBeNull: { type: Boolean, required: true },
         minLength: { type: Number, required: false, default: 0 },
         maxLength: { type: Number, required: false, default: 0 },
+        isEmail: { type: Boolean, required: false, default: false },
+        regex: { type:String, required: false, default: null },
       }),
     ],
     required: true,
@@ -59,6 +61,17 @@ const StaticValidationSchema: Mongoose.Schema<StaticValidationModel> = new Mongo
   },
 });
 
+StaticValidationSchema.pre('save', function(next) {
+  var model = this as StaticValidationModel;
+  model.OtherFields.find((o: OtherFields) => {
+    if (o.isEmail) {
+      o.regex = new RegExp(
+        '^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)* @[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$'
+      );
+    }
+  });
+  next();
+});
 class StaticValidationModel extends Mongoose.Document {
   public Columns: Array<string>;
   public DateField: Array<DateField>;
@@ -83,6 +96,8 @@ class OtherFields {
   public canBeNull: boolean;
   public minLength?: number;
   public maxLength?: number;
+  public isEmail?: boolean;
+  public regex?: RegExp;
 }
 
 class ErrorField {
