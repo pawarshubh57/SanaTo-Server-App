@@ -8,7 +8,7 @@ const userName = 'yogeshs';
 const password = 'yogeshs';
 const mongoHost = 'localhost';
 const databaseName = 'sanatodb';
-const mongoDbUrl = `mongodb://${mongoHost}:${mongoPort}/?ssl=true`;
+const mongoDbUrl = `mongodb://${mongoHost}:${mongoPort}/?ssl=false`;
 
 
 var crtPath = resolve(__dirname, '../', 'certificates');
@@ -18,8 +18,8 @@ const mongoDbOpt: Mongoose.ConnectionOptions = {
   autoIndex: false,
   connectTimeoutMS: 10000,
   socketTimeoutMS: 45000,
-  sslKey: readFileSync(join(crtPath, 'mongodb.pem')),
-  sslCert: readFileSync(join(crtPath, 'mongodb-cert.crt')),
+  // sslKey: readFileSync(join(crtPath, 'mongodb.pem')),
+  // sslCert: readFileSync(join(crtPath, 'mongodb-cert.crt')),
   dbName: databaseName,
   family: 4,
   readPreference: 'secondary',
