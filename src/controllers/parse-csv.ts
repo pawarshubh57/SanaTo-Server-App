@@ -5,9 +5,9 @@ import { sanaToService } from '../base-repositories/sana-to-db-service';
 import { DataTrainedModel } from '../models';
 import Mongoose from 'mongoose';
 
-const parseCsv = function(request: Request, response: Response) {
-  let filePath: string =
-    'D:\\Flo-Kapture-Mean-Stack-Projects\\Flo-Kapture-NodeJs-TypeScript-App\\dist\\ExtractedProjects\\CCSES-20180829\\I-Descriptors\\AC.FLE.csv';
+const parseCsv = function (request: Request, response: Response) {
+  let filePath: string = '';
+  if (typeof filePath === "undefined" || filePath === "") return response.send("filePath is null or empty");
   const isParsed: boolean = csvFileParsing.parseCsv(filePath, ',');
 
   response
@@ -16,8 +16,8 @@ const parseCsv = function(request: Request, response: Response) {
     .end();
 };
 
-const uploadFiles = function(request: any, response: Response) {
-  Upload(request, response, function(err: Error) {
+const uploadFiles = function (request: any, response: Response) {
+  Upload(request, response, function (err: Error) {
     if (err) {
       response.status(500).json({ Status: 'Error in uploading file' });
     } else {
@@ -28,25 +28,21 @@ const uploadFiles = function(request: any, response: Response) {
   });
 };
 
-const addDataTrainModel = function(request: Request, response: Response) {
+const addDataTrainModel = function (request: Request, response: Response) {
   var reqBody = request.body; // as DataTrainedModel;
   var dateColumn: string = reqBody.DateColumn;
+  let dateFormat: string = reqBody.DateFormat;
   // var numericFields: Array<string> = reqBody.NumericFields;
   // var nonNumericFields = reqBody.NonNumericFields;
   var primaryKeys: Array<string> = reqBody.PrimaryKeys;
-  var primaryKeyIndicator = primaryKeys.join('-');
+  // var primaryKeyIndicator = primaryKeys.join('-');
   var fileStatic: any = reqBody.FileDetails;
   var filePath = fileStatic.CompletePath;
   var temp = reqBody.ProportionalityColumn;
 
-  const proportionality: string = csvFileParsing.getProportionality(
-    filePath,
-    ',',
-    dateColumn,
-    temp
-  );
-  const trianModel: DataTrainedModel = {
-    PrimaryKeyIndicator: primaryKeyIndicator,
+  const proportionality: string = csvFileParsing.getProportionality(filePath, ',', dateColumn, temp, dateFormat);
+  const trialModel: DataTrainedModel = {
+    PrimaryKeyIndicator: primaryKeys,
     DateColumn: dateColumn,
     NumericFields: reqBody.NumericFields,
     NonNumericFields: reqBody.NonNumericFields,
@@ -54,8 +50,8 @@ const addDataTrainModel = function(request: Request, response: Response) {
     FileStatics: fileStatic,
     Proportionality: proportionality,
   } as DataTrainedModel;
-  
-  sanaToService.DataTrainModel.addItem(trianModel)
+
+  sanaToService.DataTrainModel.addItem(trialModel)
     .then(doc => {
       response.status(200).send(doc);
     })
