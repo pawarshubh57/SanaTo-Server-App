@@ -2,7 +2,7 @@ import Mongoose from 'mongoose';
 
 const DataTrainedSchema: Mongoose.Schema<DataTrainedModel> = new Mongoose.Schema<DataTrainedModel>({
   PrimaryKeyIndicator: {
-    type: String,
+    type: [String],
   },
   DateColumn: {
     type: String,
@@ -32,7 +32,7 @@ const DataTrainedSchema: Mongoose.Schema<DataTrainedModel> = new Mongoose.Schema
 });
 
 class DataTrainedModel extends Mongoose.Document {
-  public PrimaryKeyIndicator: string;
+  public PrimaryKeyIndicator: Array<string>;
   public DateColumn: string;
   public DateFormat: string;
   public NumericFields: Array<string>;

@@ -3,9 +3,9 @@ import path from 'path';
 import { stringExtensions } from '..';
 
 class CsvFileParsing {
-  public parseCsv = function(filePath: string, delimiter: string): boolean {
-    const splitRegExp = 
-    new RegExp(`\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
+  public parseCsv = function (filePath: string, delimiter: string): boolean {
+    const splitRegExp =
+      new RegExp(`\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
     const readStream = fs.readFileSync(filePath);
     const entityName = stringExtensions.fileNameWithoutExtension(path.win32.basename(filePath));
     const descLines = readStream.toString().split('\n');
@@ -38,7 +38,7 @@ class CsvFileParsing {
     }
   };
 
-  public getHeaders = function(filePath: string, delimiter: string): Array<string> {
+  public getHeaders = function (filePath: string, delimiter: string): Array<string> {
     const splitRegExp = new RegExp(`\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
     const readStream = fs.readFileSync(filePath);
     //const entityName = stringExtensions.fileNameWithoutExtension(path.win32.basename(filePath));
@@ -46,12 +46,7 @@ class CsvFileParsing {
     const headers: Array<string> = descLines.shift().split(splitRegExp);
     return headers;
   };
-  public getProportionality = function(
-    filePath: string,
-    delimiter: string,
-    dateColumn: string,
-    propCol: string
-  ): string {
+  public getProportionality = function (filePath: string, delimiter: string, dateColumn: string, propCol: string, dateFormat: string): string {
     const splitRegExp = new RegExp(`\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
     const readStream = fs.readFileSync(filePath);
     const descLines = readStream.toString().split('\n');
@@ -72,11 +67,10 @@ class CsvFileParsing {
         }
         processedArray.push(csvRecord);
       }
-      var temp = processedArray;
-            temp.sort(function(a: any, b: any): any {
-        var dateA = Date.parse(a[dateColumn]);
-        var dateB = Date.parse(b[dateColumn]);
-        return dateA - dateB;
+      var temp: any[] = processedArray.sort(function (a: any, b: any): any {
+        var dateA = new Date(a[dateColumn]);
+        var dateB = new Date(b[dateColumn]);
+        return dateB - dateA;
       });
       // console.log(temp);
       let inc: number = 0;
@@ -87,7 +81,7 @@ class CsvFileParsing {
         exp1 < exp2 ? inc++ : dec++;
       }
       var proportionality = inc > dec ? 'Directly' : 'Inversely';
-      console.log('Propotionality Value: ', proportionality);
+      console.log('Proportionality Value: ', proportionality);
       return proportionality;
     } catch (ex) {
       console.log(ex);

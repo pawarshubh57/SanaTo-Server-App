@@ -21,8 +21,7 @@ Promise.resolve(mongoConnection())
     var App = Express();
     App.use(json({ limit: '60mb' }));
     App.use(urlencoded({ limit: '60mb', extended: true }));
-    App.use(Cors());
-   
+    App.use(Cors());   
 
     var ExpressPath: any = require('express-path');
     var AppRoutes: any = require('./routes/app-routes');
