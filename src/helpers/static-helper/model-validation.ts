@@ -3,7 +3,7 @@ import { DateField, OtherFields, ErrorField } from '../../models';
 import moment from 'moment';
 
 class ModelValidation {
-  public validateObj = async function(body: any): Promise<Array<ErrorField>> {
+  public validateObj = async function (body: any): Promise<Array<ErrorField>> {
     const errors: Array<ErrorField> = [];
     const primaryKeyFields: Array<string> = body.PrimaryKeyFields;
     const data: any = body.Data as any;
@@ -24,9 +24,10 @@ class ModelValidation {
             console.log('Date Field', v);
             // first check whether valid date or not
             var date: Date = data[d];
-            // var testDate = Date.parse(data[d]);
+            var testDate = moment(data[d]);
             // check format of Date
-            var isValidDate = moment(date, v.format, true).isValid();
+            // changes done...
+            var isValidDate = moment("02/12/2020", v.format, true).isValid();
             console.log('isValidDate and format ', isValidDate);
             if (!isValidDate) {
               errors.push({
@@ -61,7 +62,7 @@ class ModelValidation {
               }
               var lengthCheck =
                 (o.maxLength === 0 && o.minLength === 0) ||
-                (value.length <= o.maxLength && value.length >= o.minLength)
+                  (value.length <= o.maxLength && value.length >= o.minLength)
                   ? true
                   : false;
               if (!lengthCheck) {
@@ -75,15 +76,15 @@ class ModelValidation {
               //check for minValue and maxValue
               try {
                 var val: number = Number.parseInt(data[d]);
-              // if (NaN)
-              var typeCheck = typeof val === 'number' ? true : false;
-              if (!typeCheck) {
-                errors.push({
-                  column: o.fieldName,
-                  value: val,
-                  msg: `${val} is not of type ${o.type}`,
-                });
-              }
+                // if (NaN)
+                var typeCheck = typeof val === 'number' ? true : false;
+                if (!typeCheck) {
+                  errors.push({
+                    column: o.fieldName,
+                    value: val,
+                    msg: `${val} is not of type ${o.type}`,
+                  });
+                }
               } catch (error) {
                 errors.push({
                   column: o.fieldName,
@@ -92,7 +93,7 @@ class ModelValidation {
                   error
                 });
               }
-              
+
               var valueCheck =
                 (o.minValue === 0 && o.maxValue === 0) || (val <= o.maxValue && val >= o.minValue)
                   ? true
@@ -113,7 +114,7 @@ class ModelValidation {
     } catch (error) {
       console.log();
       return errors;
-    }    
+    }
   };
 }
 

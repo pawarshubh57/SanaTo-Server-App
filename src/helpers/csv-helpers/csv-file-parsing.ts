@@ -70,6 +70,8 @@ class CsvFileParsing {
       var temp: any[] = processedArray.sort(function (a: any, b: any): any {
         var dateA = new Date(a[dateColumn]);
         var dateB = new Date(b[dateColumn]);
+        // Date values are wrong here
+        
         return dateB - dateA;
       });
       // console.log(temp);
