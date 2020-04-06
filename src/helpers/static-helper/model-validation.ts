@@ -2,7 +2,6 @@ import { sanaToService } from '../../base-repositories/sana-to-db-service';
 import { DateField, OtherFields, ErrorField } from '../../models';
 import moment from 'moment';
 import isEmail from 'validator';
-import { isDate } from 'lodash';
 import validator from 'validator';
 
 class ModelValidation {
@@ -48,56 +47,22 @@ class ModelValidation {
             }
           }
         });
-
         others.find((o: OtherFields) => {
           if (o.fieldName === d) {
             if (o.type === 'String') {
               var value: string = data[d];
-              //check for minLength and maxLength
-              var typeCheck1 = typeof value === 'string' ? true : false;
-              if (!typeCheck1) {
-                errors.push({
-                  column: o.fieldName,
-                  value: value,
-                  msg: `${o.fieldName} is not of type ${o.type}`,
-                });
-              }
-              var nullCheck = (value === null) === o.canBeNull ? true : false;
-              if (!nullCheck) {
-                errors.push({
-                  column: o.fieldName,
-                  value: value,
-                  msg: `${o.fieldName} can not null`,
-                });
-              }
-              var lengthCheck =
-                (o.maxLength === 0 && o.minLength === 0) ||
-                (value.length <= o.maxLength && value.length >= o.minLength)
-                  ? true
-                  : false;
-              if (!lengthCheck) {
-                errors.push({
-                  column: o.fieldName,
-                  value: value,
-                  msg: `Length of ${o.fieldName} must be between ${o.maxLength} and ${o.minLength}`,
-                });
-              }
-              if (o.isEmail) {
-                var test = validator.isEmail(value);
-                var testRegex = new RegExp(o.regex);
-                var isEmailCheck = testRegex.test(value);
-                if (!isEmailCheck) {
-                  errors.push({
-                    column: o.fieldName,
-                    value: value,
-                    msg: `${o.fieldName} is not valid`,
-                  });
-                }
-              }
+              var type = 'string';
+              this.errors = this.checkNull(value, o, errors);
+              this.errors = this.checkType(value, o, errors, type);
+              this.errors = this.checkLength(value, o, errors);
+              this.errors = o.isEmail ? this.checkEmail(value, o, errors) : [];
             } else if (o.type === 'Number') {
+              var type = 'number';
+
               try {
                 var val: number = Number.parseInt(data[d]);
                 // if (NaN)
+                // this.errors=this.checkType(val,o,errors,type);
                 var typeCheck = typeof val === 'number' ? true : false;
                 if (!typeCheck) {
                   errors.push({
@@ -154,12 +119,78 @@ class ModelValidation {
           }
         });
       }
-      console.log('Final response', errors);
       return errors;
     } catch (error) {
       console.log();
       return errors;
     }
+  };
+  public checkEmail = function(
+    value: string,
+    o: OtherFields,
+    errors: Array<ErrorField>
+  ): Array<ErrorField> {
+    var test = validator.isEmail(value);
+    this.errors = errors;
+    var testRegex = new RegExp(o.regex);
+    var isEmailCheck = testRegex.test(value);
+    if (!isEmailCheck) {
+      this.errors.push({
+        column: o.fieldName,
+        value: value,
+        msg: `${o.fieldName} is not valid`,
+      });
+    }
+    return this.errors;
+  };
+  public checkLength = function(value: string, o: OtherFields, errors: Array<ErrorField>) {
+    this.errors = errors;
+    var lengthCheck =
+      (o.maxLength === 0 && o.minLength === 0) ||
+      (value.length <= o.maxLength && value.length >= o.minLength)
+        ? true
+        : false;
+    if (!lengthCheck) {
+      this.errors.push({
+        column: o.fieldName,
+        value: value,
+        msg: `Length of ${o.fieldName} must be between ${o.maxLength} and ${o.minLength}`,
+      });
+    }
+    return this.errors;
+  };
+  public checkNull = function(
+    value: string | number,
+    o: OtherFields,
+    errors: Array<ErrorField>
+  ): Array<ErrorField> {
+    this.errors = errors;
+    var nullCheck = (value === null) === o.canBeNull ? true : false;
+    if (!nullCheck) {
+      this.errors.push({
+        column: o.fieldName,
+        value: value,
+        msg: `${o.fieldName} can not null`,
+      });
+    }
+    return this.errors;
+  };
+  public checkType = function(
+    value: string,
+    o: OtherFields,
+    errors: Array<ErrorField>,
+    type: any
+  ): Array<ErrorField> {
+    this.errors = errors;
+    var typeCheck1 = typeof value === type ? true : false;
+    if (!typeCheck1) {
+      this.errors.push({
+        column: o.fieldName,
+        value: value,
+        msg: `${o.fieldName} is not of type ${o.type}`,
+      });
+    }
+    return this.errors;
   };
 }
 
