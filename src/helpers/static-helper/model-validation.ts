@@ -5,7 +5,7 @@ import isEmail from 'validator';
 import validator from 'validator';
 
 class ModelValidation {
-  public validateObj = async function (body: any): Promise<Array<ErrorField>> {
+  public validateObj = async function(body: any): Promise<Array<ErrorField>> {
     const errors: Array<ErrorField> = [];
     const primaryKeyFields: Array<string> = body.PrimaryKeyFields;
     const data: any = body.Data as any;
@@ -49,14 +49,14 @@ class ModelValidation {
         });
         others.find((o: OtherFields) => {
           if (o.fieldName === d) {
-            if (o.type === 'String') {
+            if (o.type === 'string') {
               var value: string = data[d];
               var type = 'string';
               this.errors = this.checkNull(value, o, errors);
               this.errors = this.checkType(value, o, errors, type);
               this.errors = this.checkLength(value, o, errors);
               this.errors = o.isEmail ? this.checkEmail(value, o, errors) : [];
-            } else if (o.type === 'Number') {
+            } else if (o.type === 'number') {
               var type = 'number';
 
               try {
@@ -103,7 +103,7 @@ class ModelValidation {
                   }
                   var valueCheck =
                     (o.minValue === 0 && o.maxValue === 0) ||
-                      (val <= o.maxValue && val >= o.minValue)
+                    (val <= o.maxValue && val >= o.minValue)
                       ? true
                       : false;
                   if (!valueCheck) {
@@ -125,37 +125,39 @@ class ModelValidation {
       return errors;
     }
   };
-  public checkEmail = function (value: string, o: OtherFields, errors: Array<ErrorField>): Array<ErrorField> {
+  public checkEmail = function(
+    value: string,
+    o: OtherFields,
+    errors: Array<ErrorField>
+  ): Array<ErrorField> {
     var test = validator.isEmail(value);
-    this.errors = errors;
     var testRegex = new RegExp(o.regex);
     var isEmailCheck = testRegex.test(value);
-    if (!isEmailCheck) {
-      this.errors.push({
-        column: o.fieldName,
-        value: value,
-        msg: `${o.fieldName} is not valid`,
-      });
-    }
-    return this.errors;
+    if (isEmailCheck) return errors;
+    return this.errors.push({
+      column: o.fieldName,
+      value: value,
+      msg: `${o.fieldName} is not valid`,
+    });
   };
-  public checkLength = function (value: string, o: OtherFields, errors: Array<ErrorField>) {
-    this.errors = errors;
+  public checkLength = function(value: string, o: OtherFields, errors: Array<ErrorField>) {
     var lengthCheck =
       (o.maxLength === 0 && o.minLength === 0) ||
-        (value.length <= o.maxLength && value.length >= o.minLength)
+      (value.length <= o.maxLength && value.length >= o.minLength)
         ? true
         : false;
-    if (!lengthCheck) {
-      this.errors.push({
-        column: o.fieldName,
-        value: value,
-        msg: `Length of ${o.fieldName} must be between ${o.maxLength} and ${o.minLength}`,
-      });
-    }
-    return this.errors;
+    if (lengthCheck) return errors;
+    return this.errors.push({
+      column: o.fieldName,
+      value: value,
+      msg: `Length of ${o.fieldName} must be between ${o.maxLength} and ${o.minLength}`,
+    });
   };
-  public checkNull = function (value: string | number, o: OtherFields, errors: Array<ErrorField>): Array<ErrorField> {
+  public checkNull = function(
+    value: string | number,
+    o: OtherFields,
+    errors: Array<ErrorField>
+  ): Array<ErrorField> {
     var nullCheck = (value === null) === o.canBeNull ? true : false;
     if (nullCheck) return errors;
     return this.errors.push({
@@ -164,7 +166,12 @@ class ModelValidation {
       msg: `${o.fieldName} can not null`,
     });
   };
-  public checkType = function (value: string, o: OtherFields, errors: Array<ErrorField>, type: any): Array<ErrorField> {
+  public checkType = function(
+    value: string,
+    o: OtherFields,
+    errors: Array<ErrorField>,
+    type: any
+  ): Array<ErrorField> {
     var typeCheck = typeof value === type ? true : false;
     if (typeCheck) return errors;
     return this.errors.push({
