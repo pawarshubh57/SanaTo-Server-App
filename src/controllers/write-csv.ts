@@ -33,6 +33,5 @@ const writeFile = function (request: Request, response: Response) {
 }
 
 export {
-  writeFile,
-  appendFile
+  writeFile
 }
