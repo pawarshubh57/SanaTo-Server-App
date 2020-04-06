@@ -10,7 +10,7 @@
     "start": "npm run serve",
     "serve": "nodemon --inspect-brk --inspect dist/sana-to-server-host-app.js",
     "test": "jest src",
-    "watch-node": "nodemon --inspect-brk --inspect=127.0.0.1:9230 dist/sana-to-server-host-app.js",
+    "watch-node": "nodemon --inspect-brk --inspect=127.0.0.1:9222 dist/sana-to-server-host-app.js",
     "watch-ts": "tsc -w"
   },
   "keywords": [
