@@ -15,6 +15,7 @@ const staticModelRoutes: string[][] = [
 ];
 const writeFileRoute : string[][] = [
    ['api/write-csv/append-file', 'write-csv#appendFile', 'get'],
+   ['api/write-csv/write-file', 'write-csv#writeFile', 'post']
 ]
 var appRoutes: any[] = Array.prototype.concat(
   homeRoutes,

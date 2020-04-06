@@ -71,12 +71,13 @@ class CsvFileParsing {
       }
       var temp: any[] = processedArray.sort(function (a: any, b: any): any {
         var momentA = moment(a[dateColumn], dateFormat);
-        var momentB = moment(b[dateColumn], dateFormat);        
-        var dateA = Date.parse(a[dateColumn]); // new Date(a[dateColumn]);
-        var dateB = Date.parse(b[dateColumn]); // new Date(b[dateColumn]);
+        var momentB = moment(b[dateColumn], dateFormat);
+        // var dateA = Date.parse(a[dateColumn]); // new Date(a[dateColumn]);
+        // var dateB = Date.parse(b[dateColumn]); // new Date(b[dateColumn]);
         if (momentA > momentB) return 1;
-        else if (momentA < momentB) return -1;       
-        return dateA - dateB;
+        else return -1;
+        // else if (momentA < momentB) return -1;       
+        // return dateA - dateB;
       });
       // console.log(temp);
       let inc: number = 0;
