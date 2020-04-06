@@ -1,9 +1,12 @@
 import { sanaToService } from '../../base-repositories/sana-to-db-service';
 import { DateField, OtherFields, ErrorField } from '../../models';
 import moment from 'moment';
+import isEmail from 'validator';
+import { isDate } from 'lodash';
+import validator from 'validator';
 
 class ModelValidation {
-  public validateObj = async function (body: any): Promise<Array<ErrorField>> {
+  public validateObj = async function(body: any): Promise<Array<ErrorField>> {
     const errors: Array<ErrorField> = [];
     const primaryKeyFields: Array<string> = body.PrimaryKeyFields;
     const data: any = body.Data as any;
@@ -13,19 +16,20 @@ class ModelValidation {
       $and: [{ Columns: { $all: keys } }, { Columns: { $size: keys.length } }],
     };
     const model = await sanaToService.StaticModel.getItem(filter);
-
+    console.log(model);
     const dates: Array<DateField> = model.DateField;
     const others: Array<OtherFields> = model.OtherFields;
-    console.log(model);
+
     try {
       for (let d in data) {
         dates.find((v: DateField) => {
           if (v.dateColumn === d) {
             console.log('Date Field', v);
             var date: Date = data[d];
+            // var test = isDate(data[d]);
             // check format of Date
             // changes done...
-            var isValidDate = moment("02/12/2020", v.format, true).isValid();
+            // var isValidDate = moment('02/12/2020', v.format, true).isValid();
             console.log('isValidDate and format ', isValidDate);
             // check format of Date
             var testDate = moment(date);
@@ -68,7 +72,7 @@ class ModelValidation {
               }
               var lengthCheck =
                 (o.maxLength === 0 && o.minLength === 0) ||
-                  (value.length <= o.maxLength && value.length >= o.minLength)
+                (value.length <= o.maxLength && value.length >= o.minLength)
                   ? true
                   : false;
               if (!lengthCheck) {
@@ -77,6 +81,18 @@ class ModelValidation {
                   value: value,
                   msg: `Length of ${o.fieldName} must be between ${o.maxLength} and ${o.minLength}`,
                 });
+              }
+              if (o.isEmail) {
+                var test = validator.isEmail(value);
+                var testRegex = new RegExp(o.regex);
+                var isEmailCheck = testRegex.test(value);
+                if (!isEmailCheck) {
+                  errors.push({
+                    column: o.fieldName,
+                    value: value,
+                    msg: `${o.fieldName} is not valid`,
+                  });
+                }
               }
             } else if (o.type === 'Number') {
               try {
@@ -95,7 +111,7 @@ class ModelValidation {
                   column: o.fieldName,
                   value: val,
                   msg: `${val} is not of type ${o.type}`,
-                  error
+                  error,
                 });
               }
 
@@ -104,7 +120,6 @@ class ModelValidation {
                   ? true
                   : false;
               if (!valueCheck) {
-
                 var val: number = Number.parseInt(data[d]);
                 if (isNaN(val)) {
                   errors.push({
@@ -122,7 +137,8 @@ class ModelValidation {
                     });
                   }
                   var valueCheck =
-                    (o.minValue === 0 && o.maxValue === 0) || (val <= o.maxValue && val >= o.minValue)
+                    (o.minValue === 0 && o.maxValue === 0) ||
+                    (val <= o.maxValue && val >= o.minValue)
                       ? true
                       : false;
                   if (!valueCheck) {
