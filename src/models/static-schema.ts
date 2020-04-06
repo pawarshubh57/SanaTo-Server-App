@@ -29,7 +29,7 @@ const StaticValidationSchema: Mongoose.Schema<StaticValidationModel> = new Mongo
     type: [
       new Mongoose.Schema<OtherFields>({
         fieldName: { type: String, required: true, trim: true },
-        type: { type: String, required: true, trim: true, enum: ['String', 'Number'] },
+        type: { type: String, required: true, trim: true, enum: ['string', 'number'] },
         maxValue: { type: Number, required: false, default: 0 },
         minValue: { type: Number, required: false, default: 0 },
         formula: { type: String, trim: true, required: false, default: null },

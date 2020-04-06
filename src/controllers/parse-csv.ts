@@ -37,8 +37,8 @@ const addDataTrainModel = function (request: Request, response: Response) {
   var primaryKeys: Array<string> = reqBody.PrimaryKeys;
   // var primaryKeyIndicator = primaryKeys.join('-');
   var fileStatic: any = reqBody.FileDetails;
-  var filePath = fileStatic.CompletePath;
-  var temp = reqBody.ProportionalityColumn;
+  var filePath: string = fileStatic.CompletePath;
+  var temp: any = reqBody.ProportionalityColumn;
 
   const proportionality: string = csvFileParsing.getProportionality(filePath, ',', dateColumn, temp, dateFormat);
   const trialModel: DataTrainedModel = {
