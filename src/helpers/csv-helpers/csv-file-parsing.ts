@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { stringExtensions } from '..';
+import moment from 'moment';
 
 class CsvFileParsing {
   public parseCsv = function (filePath: string, delimiter: string): boolean {
@@ -63,16 +64,19 @@ class CsvFileParsing {
         for (const header of headers) {
           var shifted: string = splitedLines.shift() || '';
           const recordValue: string = shifted.replace(/\n/gi, '').trim();
-          csvRecord[header] = recordValue;
+          let trimmedHeader: string = header.trim();
+          csvRecord[trimmedHeader] = recordValue;
         }
         processedArray.push(csvRecord);
       }
       var temp: any[] = processedArray.sort(function (a: any, b: any): any {
-        var dateA = new Date(a[dateColumn]);
-        var dateB = new Date(b[dateColumn]);
-        // Date values are wrong here
-        
-        return dateB - dateA;
+        var momentA = moment(a[dateColumn], dateFormat);
+        var momentB = moment(b[dateColumn], dateFormat);        
+        var dateA = Date.parse(a[dateColumn]); // new Date(a[dateColumn]);
+        var dateB = Date.parse(b[dateColumn]); // new Date(b[dateColumn]);
+        if (momentA > momentB) return 1;
+        else if (momentA < momentB) return -1;       
+        return dateA - dateB;
       });
       // console.log(temp);
       let inc: number = 0;
