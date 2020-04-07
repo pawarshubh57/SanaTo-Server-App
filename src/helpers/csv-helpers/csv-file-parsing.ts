@@ -46,6 +46,7 @@ class CsvFileParsing {
     const headers: Array<string> = descLines.shift().split(splitRegExp);
     return headers;
   };
+  
   public getProportionality = function (filePath: string, delimiter: string, dateColumn: string, propCol: string, dateFormat: string): string {
     const splitRegExp = new RegExp(`\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
     const readStream = fs.readFileSync(filePath);
