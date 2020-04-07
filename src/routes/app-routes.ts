@@ -14,7 +14,7 @@ const staticModelRoutes: string[][] = [
   ['api/static-model/validate-data', 'static-model-validation#validateData', 'post'],
 ];
 const writeFileRoute : string[][] = [
-   ['api/write-csv/append-file', 'write-csv#appendFile', 'get'],
+   ['api/write-csv/write-file', 'write-csv#writeFile', 'post']
 ]
 var appRoutes: any[] = Array.prototype.concat(
   homeRoutes,
