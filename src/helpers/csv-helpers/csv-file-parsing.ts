@@ -38,7 +38,6 @@ class CsvFileParsing {
       return false;
     }
   };
-
   public getHeaders = function (filePath: string, delimiter: string): Array<string> {
     const splitRegExp = new RegExp(`\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
     const readStream = fs.readFileSync(filePath);
