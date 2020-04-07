@@ -57,63 +57,14 @@ class ModelValidation {
               this.errors = this.checkLength(value, o, errors);
               this.errors = o.isEmail ? this.checkEmail(value, o, errors) : [];
             } else if (o.type === 'number') {
-              var type = 'number';
-
-              try {
-                var val: number = Number.parseInt(data[d]);
-                // if (NaN)
-                // this.errors=this.checkType(val,o,errors,type);
-                var typeCheck = typeof val === 'number' ? true : false;
-                if (!typeCheck) {
-                  errors.push({
-                    column: o.fieldName,
-                    value: val,
-                    msg: `${val} is not of type ${o.type}`,
-                  });
-                }
-              } catch (error) {
-                errors.push({
-                  column: o.fieldName,
-                  value: val,
-                  msg: `${val} is not of type ${o.type}`,
-                  error,
-                });
-              }
-
-              var valueCheck =
-                (o.minValue === 0 && o.maxValue === 0) || (val <= o.maxValue && val >= o.minValue)
-                  ? true
-                  : false;
-              if (!valueCheck) {
-                var val: number = Number.parseInt(data[d]);
-                if (isNaN(val)) {
-                  errors.push({
-                    column: o.fieldName,
-                    value: data[d],
-                    msg: `${o.fieldName} must be Number`,
-                  });
-                } else {
-                  var typeCheck = typeof val === 'number' ? true : false;
-                  if (!typeCheck) {
-                    errors.push({
-                      column: o.fieldName,
-                      value: val,
-                      msg: `${val} is not of type ${o.type}`,
-                    });
-                  }
-                  var valueCheck =
-                    (o.minValue === 0 && o.maxValue === 0) ||
-                    (val <= o.maxValue && val >= o.minValue)
-                      ? true
-                      : false;
-                  if (!valueCheck) {
-                    errors.push({
-                      column: o.fieldName,
-                      value: val,
-                      msg: `Value must be between ${o.minValue} and ${o.maxValue}`,
-                    });
-                  }
-                }
+              var val1 = data[d];
+              var val = Number.parseInt(data[d]);
+              if (val1 === null) {
+                this.errors = this.checkNull(val1, o, errors);
+              } else if (isNaN(val)) {
+                this.errors = this.checkNanValue(val, o, errors);
+              } else {
+                this.errors = this.checkMinMaxValue(val, o, errors);
               }
             }
           }
@@ -178,6 +129,32 @@ class ModelValidation {
       column: o.fieldName,
       value: value,
       msg: `${o.fieldName} is not of type ${o.type}`,
+    });
+  };
+  public checkNanValue = function(
+    value: any,
+    o: OtherFields,
+    errors: Array<ErrorField>
+  ): Array<ErrorField> {
+    if (isNaN(value)) {
+      return this.errors.push({
+        column: o.fieldName,
+        value: value,
+        msg: `${o.fieldName} must be Number`,
+      });
+    }
+    return errors;
+  };
+  public checkMinMaxValue = function(value: number, o: OtherFields, errors: Array<ErrorField>) {
+    var valueCheck =
+      (o.minValue === 0 && o.maxValue === 0) || (value <= o.maxValue && value >= o.minValue)
+        ? true
+        : false;
+    if (valueCheck) return errors;
+    return this.errors.push({
+      column: o.fieldName,
+      value: value,
+      msg: `Value must be between ${o.minValue} and ${o.maxValue}`,
     });
   };
 }
