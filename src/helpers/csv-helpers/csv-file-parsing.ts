@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { stringExtensions } from '..';
+import { stringExtensions, momentExtensions } from '..';
 import moment from 'moment';
 
 class CsvFileParsing {
@@ -46,7 +46,7 @@ class CsvFileParsing {
     const headers: Array<string> = descLines.shift().split(splitRegExp);
     return headers;
   };
-  
+
   public getProportionality = function (filePath: string, delimiter: string, dateColumn: string, propCol: string, dateFormat: string): string {
     const splitRegExp = new RegExp(`\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
     const readStream = fs.readFileSync(filePath);
@@ -70,6 +70,8 @@ class CsvFileParsing {
         processedArray.push(csvRecord);
       }
       var temp: any[] = processedArray.sort(function (a: any, b: any): any {
+        let monthDays = momentExtensions.getDaysOfMonth(a[dateColumn]);
+        console.log(monthDays);
         var momentA = moment(a[dateColumn], dateFormat);
         var momentB = moment(b[dateColumn], dateFormat);
         // var dateA = Date.parse(a[dateColumn]); // new Date(a[dateColumn]);
