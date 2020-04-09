@@ -17,7 +17,7 @@ const writeFile = function (request: Request, response: Response) {
   for (let cnt = 0; cnt <= 365; cnt++) {
     var randomValue = Math.floor((Math.random() * 200) + cnt);
     let row = {
-      RowId: (cnt+1),
+      RowId: (cnt + 1),
       Name: input.name,
       CardNo: "12349875",
       ContactNo: "(123) 456-4567",

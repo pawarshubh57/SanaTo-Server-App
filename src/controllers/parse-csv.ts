@@ -62,7 +62,7 @@ const calculateProportionality = function (request: Request, response: Response)
   let id: string | ObjectId = request.query.id;
   sanaToService.DataTrainModel.findById(id)
     .then((model) => {
-      let prop: string = csvFileParsing.calculateProportionality(model);
+      let prop: {} = csvFileParsing.calculateProportionality(model);
       response.status(200).json(prop).end();
     })
     .catch((err) => {

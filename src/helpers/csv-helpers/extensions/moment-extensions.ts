@@ -13,7 +13,16 @@ class MomentExtensions {
                   daysArray.push(datesArray[cnt]);
             }
             return { daysInMonth, daysArray };
-      }
+      };
+      randomDateWithTime() {
+            return new Date(Math.random() * new Date().getTime())
+      };
+      randomDateBetweenWithTime(startDate: Date, endDate: Date) {
+            let start: Date = startDate || new Date();
+            let end: Date = endDate || new Date();
+            let diff = end.getTime() - start.getTime();
+            return new Date(Math.random() * diff + start.getTime());
+      };
 }
 
 const momentExtensions: MomentExtensions = new MomentExtensions();

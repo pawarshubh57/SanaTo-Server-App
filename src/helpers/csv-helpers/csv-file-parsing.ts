@@ -94,13 +94,19 @@ class CsvFileParsing {
       console.log(ex);
     }
   };
-  public calculateProportionality = function (dataTrainedModel: DataTrainedModel): string {
+  public calculateProportionality = function (dataTrainedModel: DataTrainedModel): {} {
     const splitRegExp = new RegExp(`\\,(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
     const readStream = fs.readFileSync(dataTrainedModel.FileStatics.CompletePath);
     const descLines = readStream.toString().split('\n');
     const headers: Array<string> = descLines.shift().split(splitRegExp);
     let processLineCount: number = -1;
     const processedArray: Array<any> = [];
+    for (let d = 0; d <= 45; d++) {
+      let startDate = new Date(2020, 1, 1);
+      let endDate = new Date(2020, 1, 31);
+      var dateTime = momentExtensions.randomDateBetweenWithTime(startDate, endDate);
+      console.log(dateTime);
+    }
     try {
       for (const descLine of descLines) {
         ++processLineCount;
@@ -115,6 +121,8 @@ class CsvFileParsing {
         }
         processedArray.push(csvRecord);
       }
+      let trendInc: number = 0;
+      let trendDesc: number = 0;
 
       let inc: number = 0;
       let dec: number = 0;
@@ -124,17 +132,23 @@ class CsvFileParsing {
         let monthDays: { daysInMonth: number, daysArray: any[] } =
           momentExtensions.getDaysOfMonth(cnt, date, dataTrainedModel.DateColumn, processedArray);
         cnt += (monthDays.daysInMonth) - 1;
+        let monthTrendInc: number = 0;
+        let monthTrendDesc: number = 0;
         for (let i = 0; i < monthDays.daysArray.length - 1; i++) {
           var exp1 = Number.parseInt(monthDays.daysArray[i][dataTrainedModel.ProportionalityColumn]);
           var exp2 = Number.parseInt(monthDays.daysArray[i + 1][dataTrainedModel.ProportionalityColumn]);
           exp1 < exp2 ? inc++ : dec++;
+          exp1 < exp2 ? monthTrendInc++ : monthTrendDesc++;
         }
+        monthTrendInc > monthTrendDesc ? trendInc++ : trendDesc++;
       }
       var proportionality = inc > dec ? 'Directly' : 'Inversely';
-      console.log('Proportionality Value: ', proportionality);
-      return proportionality;
+      let overAllTrending: string = trendInc > trendDesc ? "Directly" : "Inversely";
+
+      return { proportionality, overAllTrending };
     } catch (ex) {
       console.log(ex);
+      return { ex };
     }
   };
 }
