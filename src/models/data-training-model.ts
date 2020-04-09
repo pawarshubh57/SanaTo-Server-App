@@ -19,11 +19,18 @@ const DataTrainedSchema: Mongoose.Schema<DataTrainedModel> = new Mongoose.Schema
   Proportionality: {
     type: String,
   },
-  Trend: {
+  Trending: {
     type: String,
   },
+  ProportionalityColumn: {
+    type: String
+  },
   FileStatics: {
-    type: Object,
+    type: {
+      FileName: { type: String },
+      UploadPath: { type: String },
+      CompletePath: { type: String }
+    },
   },
   CreatedOn: {
     type: Date,
@@ -38,8 +45,13 @@ class DataTrainedModel extends Mongoose.Document {
   public NumericFields: Array<string>;
   public NonNumericFields: Array<string>;
   public Proportionality: string;
-  public Trend?: string;
-  public FileStatics: object;
+  public ProportionalityColumn: string;
+  public Trending?: string;
+  public FileStatics: {
+    FileName: string,
+    UploadPath: string,
+    CompletePath: string
+  };
 }
 
 export { DataTrainedModel, DataTrainedSchema };

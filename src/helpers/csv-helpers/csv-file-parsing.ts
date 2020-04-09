@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { stringExtensions, momentExtensions } from '..';
 import moment from 'moment';
+import { DataTrainedModel } from '../../models';
 
 class CsvFileParsing {
   public parseCsv = function (filePath: string, delimiter: string): boolean {
@@ -46,7 +47,6 @@ class CsvFileParsing {
     const headers: Array<string> = descLines.shift().split(splitRegExp);
     return headers;
   };
-
   public getProportionality = function (filePath: string, delimiter: string, dateColumn: string, propCol: string, dateFormat: string): string {
     const splitRegExp = new RegExp(`\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
     const readStream = fs.readFileSync(filePath);
@@ -70,8 +70,6 @@ class CsvFileParsing {
         processedArray.push(csvRecord);
       }
       var temp: any[] = processedArray.sort(function (a: any, b: any): any {
-        let monthDays = momentExtensions.getDaysOfMonth(a[dateColumn]);
-        console.log(monthDays);
         var momentA = moment(a[dateColumn], dateFormat);
         var momentB = moment(b[dateColumn], dateFormat);
         // var dateA = Date.parse(a[dateColumn]); // new Date(a[dateColumn]);
@@ -88,6 +86,49 @@ class CsvFileParsing {
         var exp1 = Number.parseInt(temp[i][propCol]);
         var exp2 = Number.parseInt(temp[i + 1][propCol]);
         exp1 < exp2 ? inc++ : dec++;
+      }
+      var proportionality = inc > dec ? 'Directly' : 'Inversely';
+      console.log('Proportionality Value: ', proportionality);
+      return proportionality;
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+  public calculateProportionality = function (dataTrainedModel: DataTrainedModel): string {
+    const splitRegExp = new RegExp(`\\,(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
+    const readStream = fs.readFileSync(dataTrainedModel.FileStatics.CompletePath);
+    const descLines = readStream.toString().split('\n');
+    const headers: Array<string> = descLines.shift().split(splitRegExp);
+    let processLineCount: number = -1;
+    const processedArray: Array<any> = [];
+    try {
+      for (const descLine of descLines) {
+        ++processLineCount;
+        if (typeof descLine === 'undefined' || descLine === null || descLine === '') continue;
+        const splitedLines = descLine.split(splitRegExp);
+        const csvRecord: any = {};
+        for (const header of headers) {
+          var shifted: string = splitedLines.shift() || '';
+          const recordValue: string = shifted.replace(/\n/gi, '').trim();
+          let trimmedHeader: string = header.trim();
+          csvRecord[trimmedHeader] = recordValue;
+        }
+        processedArray.push(csvRecord);
+      }
+
+      let inc: number = 0;
+      let dec: number = 0;
+      for (let cnt = 0; cnt < processedArray.length; cnt++) {
+        let element: any = processedArray[cnt];
+        let date: string = element[dataTrainedModel.DateColumn];
+        let monthDays: { daysInMonth: number, daysArray: any[] } =
+          momentExtensions.getDaysOfMonth(cnt, date, dataTrainedModel.DateColumn, processedArray);
+        cnt += (monthDays.daysInMonth) - 1;
+        for (let i = 0; i < monthDays.daysArray.length - 1; i++) {
+          var exp1 = Number.parseInt(monthDays.daysArray[i][dataTrainedModel.ProportionalityColumn]);
+          var exp2 = Number.parseInt(monthDays.daysArray[i + 1][dataTrainedModel.ProportionalityColumn]);
+          exp1 < exp2 ? inc++ : dec++;
+        }
       }
       var proportionality = inc > dec ? 'Directly' : 'Inversely';
       console.log('Proportionality Value: ', proportionality);

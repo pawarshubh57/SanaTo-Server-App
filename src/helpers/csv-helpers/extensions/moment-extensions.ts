@@ -1,15 +1,18 @@
 import moment from "moment";
 
 class MomentExtensions {
-      getDaysOfMonth(monthDate: Date | string) {
-            var daysInMonth = moment(monthDate).daysInMonth();
-            var daysArray: moment.Moment[] = [];
-            while (daysInMonth) {
-                  var current = moment().date(daysInMonth);
-                  daysArray.push(current);
-                  daysInMonth--;
+      getDaysOfMonth(startIndex: number, monthDate: Date | string, objKey: string, datesArray: any[]) {
+            let momentInstance = moment(monthDate);
+            var daysInMonth = momentInstance.daysInMonth();
+            let month: number = momentInstance.month();
+            let year: number = momentInstance.year();
+            var daysArray: any[] = [];
+            for (let cnt = startIndex; cnt < datesArray.length; cnt++) {
+                  let momentDate = moment(datesArray[cnt][objKey]);
+                  if (!(momentDate.year() === year && momentDate.month() === month)) break;
+                  daysArray.push(datesArray[cnt]);
             }
-            return daysArray;
+            return { daysInMonth, daysArray };
       }
 }
 

@@ -4,6 +4,7 @@ import { Upload } from '../utils/multer-config';
 import { sanaToService } from '../base-repositories/sana-to-db-service';
 import { DataTrainedModel } from '../models';
 import Mongoose from 'mongoose';
+import { ObjectId } from 'mongodb';
 
 const parseCsv = function (request: Request, response: Response) {
   let filePath: string = '';
@@ -15,7 +16,6 @@ const parseCsv = function (request: Request, response: Response) {
     .send(isParsed)
     .end();
 };
-
 const uploadFiles = function (request: any, response: Response) {
   Upload(request, response, function (err: Error) {
     if (err) {
@@ -27,7 +27,6 @@ const uploadFiles = function (request: any, response: Response) {
     }
   });
 };
-
 const addDataTrainModel = function (request: Request, response: Response) {
   var reqBody = request.body; // as DataTrainedModel;
   var dateColumn: string = reqBody.DateColumn;
@@ -59,5 +58,17 @@ const addDataTrainModel = function (request: Request, response: Response) {
       response.status(400).send(JSON.stringify(err));
     });
 };
+const calculateProportionality = function (request: Request, response: Response) {
+  let id: string | ObjectId = request.query.id;
+  sanaToService.DataTrainModel.findById(id)
+    .then((model) => {
+      let prop: string = csvFileParsing.calculateProportionality(model);
+      response.status(200).json(prop).end();
+    })
+    .catch((err) => {
+      console.log(err);
+      response.status(500).json(err).end();
+    });
+}
 
-export { parseCsv, uploadFiles, addDataTrainModel };
+export { parseCsv, uploadFiles, addDataTrainModel, calculateProportionality };
