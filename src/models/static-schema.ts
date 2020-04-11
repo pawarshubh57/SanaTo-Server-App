@@ -37,6 +37,7 @@ const StaticValidationSchema: Mongoose.Schema<StaticValidationModel> = new Mongo
         minLength: { type: Number, required: false, default: 0 },
         maxLength: { type: Number, required: false, default: 0 },
         isEmail: { type: Boolean, required: false, default: false },
+        hasFormula:{type:Boolean,required:false,default:false},
         regex: { type: String, required: false, default: null },
       }),
     ],
@@ -95,6 +96,7 @@ class OtherFields {
   public minLength?: number;
   public maxLength?: number;
   public isEmail?: boolean;
+  public hasFormula?:boolean;
   public regex?: string;
 }
 
