@@ -1,7 +1,7 @@
 import moment from "moment";
 
 class MomentExtensions {
-      getDaysOfMonth(startIndex: number, monthDate: Date | string, objKey: string, datesArray: any[]) {
+      daysOfMonth(startIndex: number, monthDate: Date | string, objKey: string, datesArray: any[]) {
             let momentInstance = moment(monthDate);
             var daysInMonth = momentInstance.daysInMonth();
             let month: number = momentInstance.month();
@@ -17,7 +17,7 @@ class MomentExtensions {
       randomDateWithTime() {
             return new Date(Math.random() * new Date().getTime())
       };
-      randomDateBetweenWithTime(startDate: Date, endDate: Date) {
+      randomDateBetweenWithTime({ startDate, endDate }: { startDate: Date; endDate: Date; }) {
             let start: Date = startDate || new Date();
             let end: Date = endDate || new Date();
             let diff = end.getTime() - start.getTime();

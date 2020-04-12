@@ -72,12 +72,11 @@ class CsvFileParsing {
       var temp: any[] = processedArray.sort(function (a: any, b: any): any {
         var momentA = moment(a[dateColumn], dateFormat);
         var momentB = moment(b[dateColumn], dateFormat);
-        // var dateA = Date.parse(a[dateColumn]); // new Date(a[dateColumn]);
-        // var dateB = Date.parse(b[dateColumn]); // new Date(b[dateColumn]);
+        var dateA = Date.parse(a[dateColumn]); // new Date(a[dateColumn]);
+        var dateB = Date.parse(b[dateColumn]); // new Date(b[dateColumn]);
         if (momentA > momentB) return 1;
-        else return -1;
-        // else if (momentA < momentB) return -1;       
-        // return dateA - dateB;
+        else if (momentA < momentB) return -1;
+        return dateA - dateB;
       });
       // console.log(temp);
       let inc: number = 0;
@@ -100,13 +99,8 @@ class CsvFileParsing {
     const descLines = readStream.toString().split('\n');
     const headers: Array<string> = descLines.shift().split(splitRegExp);
     let processLineCount: number = -1;
-    const processedArray: Array<any> = [];
-    for (let d = 0; d <= 45; d++) {
-      let startDate = new Date(2020, 1, 1);
-      let endDate = new Date(2020, 1, 31);
-      var dateTime = momentExtensions.randomDateBetweenWithTime(startDate, endDate);
-      console.log(dateTime);
-    }
+    const dataArray: Array<any> = [];
+
     try {
       for (const descLine of descLines) {
         ++processLineCount;
@@ -119,8 +113,15 @@ class CsvFileParsing {
           let trimmedHeader: string = header.trim();
           csvRecord[trimmedHeader] = recordValue;
         }
-        processedArray.push(csvRecord);
+        dataArray.push(csvRecord);
       }
+      let processedArray: any[] = dataArray.sort(function (a: any, b: any): any {
+        var momentA = moment(a[dataTrainedModel.DateColumn], dataTrainedModel.DateFormat);
+        var momentB = moment(b[dataTrainedModel.DateColumn], dataTrainedModel.DateFormat);
+        if (momentA > momentB) return 1;
+        return -1;
+      });
+
       let trendInc: number = 0;
       let trendDesc: number = 0;
 
@@ -130,7 +131,7 @@ class CsvFileParsing {
         let element: any = processedArray[cnt];
         let date: string = element[dataTrainedModel.DateColumn];
         let monthDays: { daysInMonth: number, daysArray: any[] } =
-          momentExtensions.getDaysOfMonth(cnt, date, dataTrainedModel.DateColumn, processedArray);
+          momentExtensions.daysOfMonth(cnt, date, dataTrainedModel.DateColumn, processedArray);
         cnt += (monthDays.daysInMonth) - 1;
         let monthTrendInc: number = 0;
         let monthTrendDesc: number = 0;

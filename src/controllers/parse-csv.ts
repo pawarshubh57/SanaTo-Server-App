@@ -22,16 +22,16 @@ const uploadFiles = function (request: any, response: Response) {
       response.status(500).json({ Status: 'Error in uploading file' });
     } else {
       const uploadDetails = request.uploadDetails;
-      const Headers = csvFileParsing.getHeaders(uploadDetails.CompletePath, ',');
-      response.status(200).json({ uploadDetails: request.uploadDetails, headers: Headers });
+      const headers = csvFileParsing.getHeaders(uploadDetails.CompletePath, ',');
+      response.status(200).json({ uploadDetails: request.uploadDetails, headers });
     }
   });
 };
 const addDataTrainModel = function (request: Request, response: Response) {
-  var reqBody = request.body; // as DataTrainedModel;
+  var reqBody: any = request.body; // as DataTrainedModel;
   var dateColumn: string = reqBody.DateColumn;
   let dateFormat: string = reqBody.DateFormat;
-  // var numericFields: Array<string> = reqBody.NumericFields;
+  // var numericFields: Array<string> = reqBody.NumericFields;  
   // var nonNumericFields = reqBody.NonNumericFields;
   var primaryKeys: Array<string> = reqBody.PrimaryKeys;
   // var primaryKeyIndicator = primaryKeys.join('-');
