@@ -43,7 +43,7 @@ const writeFile = function (request: Request, response: Response) {
   fs.writeFileSync(filePath, fileContent);
   response.status(200).send("Ok").end();
 }
-
+// upload
 export {
   writeFile
 }
