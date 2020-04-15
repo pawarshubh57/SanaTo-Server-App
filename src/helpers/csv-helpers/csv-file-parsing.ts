@@ -42,7 +42,7 @@ class CsvFileParsing {
   public getHeaders = function (filePath: string, delimiter: string): Array<string> {
     const splitRegExp = new RegExp(`\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
     const readStream = fs.readFileSync(filePath);
-    //const entityName = stringExtensions.fileNameWithoutExtension(path.win32.basename(filePath));
+    // const entityName = stringExtensions.fileNameWithoutExtension(path.win32.basename(filePath));
     const descLines = readStream.toString().split('\n');
     const headers: Array<string> = descLines.shift().split(splitRegExp);
     return headers;

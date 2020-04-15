@@ -44,7 +44,7 @@ Promise.resolve(mongoConnection())
     });
     var expressHttpsServer = https.createServer(httpsOptions, App);
     var portNumber = process.env.PORT || 3000;
-    App.listen(portNumber, function() {
+    expressHttpsServer.listen(portNumber, function() {
       var address: any = this.address();
       if (!globalAny.dbConnection) {
         console.log('==========================================================================');
@@ -60,19 +60,20 @@ Promise.resolve(mongoConnection())
   .catch(error => {
     console.log(error);
   });
+
 /*
-    expressHttpsServer.listen(portNumber, function () {
-        var address: any = this.address();
-        if (!globalAny.dbConnection) {
-            console.log("==========================================================================");
-            console.log(`Database connection failed!!!.  `);
-            console.log("==========================================================================");
-        }
-        console.log('=========================================================================');
-        console.log(`SanaTo Server Host Application is up running on port: ${portNumber}`);
-        console.log(JSON.stringify(address));
-        console.log('=========================================================================');
-    });
+expressHttpsServer.listen(portNumber, function () {
+    var address: any = this.address();
+    if (!globalAny.dbConnection) {
+        console.log("==========================================================================");
+        console.log(`Database connection failed!!!.  `);
+        console.log("==========================================================================");
+    }
+    console.log('=========================================================================');
+    console.log(`SanaTo Server Host Application is up running on port: ${portNumber}`);
+    console.log(JSON.stringify(address));
+    console.log('=========================================================================');
+  });
 }).catch((error) => {
     console.log(error);
 });

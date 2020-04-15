@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import moment from 'moment';
 import { momentExtensions } from '../helpers';
+var evaluate: any = require("evaluatex");
 
 const writeFile = function (request: Request, response: Response) {
   let input: { dateFormat: string, name: string } = request.body;
@@ -43,7 +44,16 @@ const writeFile = function (request: Request, response: Response) {
   fs.writeFileSync(filePath, fileContent);
   response.status(200).send("Ok").end();
 }
-// upload
+
+const evaluatex = function (request: Request, response: Response) {
+  const formula = "\\frac{\\sqrt{b^2-4(a)(c)}}{2a}";
+  var variables = { a: 2, b: 4, c: 0 };
+  var fun: Function = evaluate(formula, { latex: true });
+  var result: any = fun(variables);
+  console.log(result);
+  response.status(200).json({ fun, result }).end();
+};
+
 export {
-  writeFile
+  writeFile, evaluatex
 }
