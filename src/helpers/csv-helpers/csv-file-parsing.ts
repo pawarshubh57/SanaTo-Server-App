@@ -136,8 +136,8 @@ class CsvFileParsing {
         let monthTrendInc: number = 0;
         let monthTrendDesc: number = 0;
         for (let i = 0; i < monthDays.daysArray.length - 1; i++) {
-          var exp1 = Number.parseInt(monthDays.daysArray[i][dataTrainedModel.ProportionalityColumn]);
-          var exp2 = Number.parseInt(monthDays.daysArray[i + 1][dataTrainedModel.ProportionalityColumn]);
+          var exp1 = Number.parseInt(monthDays.daysArray[i][dataTrainedModel.ProportionalityField]);
+          var exp2 = Number.parseInt(monthDays.daysArray[i + 1][dataTrainedModel.ProportionalityField]);
           exp1 < exp2 ? inc++ : dec++;
           exp1 < exp2 ? monthTrendInc++ : monthTrendDesc++;
         }

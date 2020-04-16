@@ -62,7 +62,7 @@ class DataTrainedModel extends Mongoose.Document {
   public NumericFields: Array<string>;
   public NonNumericFields: Array<string>;
   public Proportionality: string;
-  public ProportionalityColumn: string;
+  public ProportionalityField: string;
   public Trending?: string;
   public FileStatics: {
     FileName: string,
