@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { csvFileParsing } from '../helpers';
 import { Upload } from '../utils/multer-config';
 import { sanaToService } from '../base-repositories/sana-to-db-service';
-import { DataTrainedModel } from '../models';
+import { DataTrainedModel, TrainingDetails } from '../models';
 import Mongoose from 'mongoose';
 import { ObjectId } from 'mongodb';
 
@@ -28,24 +28,22 @@ const uploadFiles = function (request: any, response: Response) {
   });
 };
 const addDataTrainModel = function (request: Request, response: Response) {
-  var reqBody: any = request.body; // as DataTrainedModel;
-  var dateColumn: string = reqBody.DateColumn;
-  let dateFormat: string = reqBody.DateFormat;
-  // var numericFields: Array<string> = reqBody.NumericFields;  
-  // var nonNumericFields = reqBody.NonNumericFields;
+  var reqBody: any = request.body;
+  let trainingModel: TrainingDetails = reqBody.TrainingDetails;
   var primaryKeys: Array<string> = reqBody.PrimaryKeys;
-  // var primaryKeyIndicator = primaryKeys.join('-');
   var fileStatic: any = reqBody.FileDetails;
   var filePath: string = fileStatic.CompletePath;
-  var temp: any = reqBody.ProportionalityColumn;
+  var proportionalityField: string = reqBody.ProportionalityField;
+  var csvDelimiter: string = reqBody.CsvDelimiter;
 
-  const proportionality: string = csvFileParsing.getProportionality(filePath, ',', dateColumn, temp, dateFormat);
+  const proportionality: string = csvFileParsing.getProportionality(filePath, ',', trainingModel.DateField, proportionalityField, trainingModel.DateFormat);
   const trialModel: DataTrainedModel = {
-    PrimaryKeyIndicator: primaryKeys,
-    DateColumn: dateColumn,
+    PrimaryKeyIndicators: primaryKeys,
+    CsvDelimiter: csvDelimiter,
+    TrainingDetails: trainingModel,
     NumericFields: reqBody.NumericFields,
     NonNumericFields: reqBody.NonNumericFields,
-    DateFormat: reqBody.DateFormat,
+    ProportionalityField: proportionalityField,
     FileStatics: fileStatic,
     Proportionality: proportionality,
   } as DataTrainedModel;

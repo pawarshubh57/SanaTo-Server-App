@@ -1,9 +1,7 @@
 import Mongoose from 'mongoose';
 import { ObjectId } from 'mongodb';
 
-const StaticValidationSchema: Mongoose.Schema<StaticValidationModel> = new Mongoose.Schema<
-  StaticValidationModel
->({
+const StaticValidationSchema: Mongoose.Schema<StaticValidationModel> = new Mongoose.Schema<StaticValidationModel>({
   Columns: {
     type: [String],
     required: true,

@@ -116,8 +116,8 @@ class CsvFileParsing {
         dataArray.push(csvRecord);
       }
       let processedArray: any[] = dataArray.sort(function (a: any, b: any): any {
-        var momentA = moment(a[dataTrainedModel.DateColumn], dataTrainedModel.DateFormat);
-        var momentB = moment(b[dataTrainedModel.DateColumn], dataTrainedModel.DateFormat);
+        var momentA = moment(a[dataTrainedModel.TrainingDetails.DateField], dataTrainedModel.TrainingDetails.DateFormat);
+        var momentB = moment(b[dataTrainedModel.TrainingDetails.DateField], dataTrainedModel.TrainingDetails.DateFormat);
         if (momentA > momentB) return 1;
         return -1;
       });
@@ -129,9 +129,9 @@ class CsvFileParsing {
       let dec: number = 0;
       for (let cnt = 0; cnt < processedArray.length; cnt++) {
         let element: any = processedArray[cnt];
-        let date: string = element[dataTrainedModel.DateColumn];
+        let date: string = element[dataTrainedModel.TrainingDetails.DateField];
         let monthDays: { daysInMonth: number, daysArray: any[] } =
-          momentExtensions.daysOfMonth(cnt, date, dataTrainedModel.DateColumn, processedArray);
+          momentExtensions.daysOfMonth(cnt, date, dataTrainedModel.TrainingDetails.DateField, processedArray);
         cnt += (monthDays.daysInMonth) - 1;
         let monthTrendInc: number = 0;
         let monthTrendDesc: number = 0;

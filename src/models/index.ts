@@ -1,7 +1,7 @@
 import { UserMasterSchema, UserMaster } from './user-master';
 import { RoleMasterSchema, RoleMaster } from './role-master';
 import TSource from './t-source-base';
-import { DataTrainedModel, DataTrainedSchema } from './data-training-model';
+import { DataTrainedModel, TrainingDetails, DataTrainedSchema } from './data-training-model';
 import {
   StaticValidationSchema,
   StaticValidationModel,
@@ -16,6 +16,7 @@ export {
   RoleMasterSchema,
   RoleMaster,
   DataTrainedModel,
+  TrainingDetails,
   DataTrainedSchema,
   StaticValidationModel,
   StaticValidationSchema,

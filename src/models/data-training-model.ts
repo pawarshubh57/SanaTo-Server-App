@@ -1,26 +1,35 @@
 import Mongoose from 'mongoose';
 
 const DataTrainedSchema: Mongoose.Schema<DataTrainedModel> = new Mongoose.Schema<DataTrainedModel>({
-  PrimaryKeyIndicator: {
-    type: [String],
+  PrimaryKeyIndicators: {
+    type: [String]
   },
-  DateColumn: {
+  CsvDelimiter: {
     type: String,
+    default: ",",
+    required: false
   },
-  DateFormat: {
-    type: String,
+  TrainingDetails: {
+    type: new Mongoose.Schema<TrainingDetails>({
+      BaseField: { type: String },
+      DateField: { type: String },
+      ProcessType: { type: String },
+      TimeField: { type: String },
+      DateFormat: { type: String },
+      TimeFormat: { type: String },
+    })
   },
   NumericFields: {
-    type: [String],
+    type: [String]
   },
   NonNumericFields: {
-    type: [String],
+    type: [String]
   },
   Proportionality: {
-    type: String,
+    type: String
   },
   Trending: {
-    type: String,
+    type: String
   },
   ProportionalityColumn: {
     type: String
@@ -30,18 +39,26 @@ const DataTrainedSchema: Mongoose.Schema<DataTrainedModel> = new Mongoose.Schema
       FileName: { type: String },
       UploadPath: { type: String },
       CompletePath: { type: String }
-    },
+    }
   },
   CreatedOn: {
     type: Date,
-    default: Date.now,
+    default: Date.now
   },
 });
 
+class TrainingDetails extends Mongoose.Document {
+  public BaseField?: string;
+  public DateField?: string;
+  public ProcessType?: string;
+  public TimeField?: string;
+  public DateFormat?: string;
+  public TimeFormat?: string;
+}
 class DataTrainedModel extends Mongoose.Document {
-  public PrimaryKeyIndicator: Array<string>;
-  public DateColumn: string;
-  public DateFormat: string;
+  public PrimaryKeyIndicators: Array<string>;
+  public CsvDelimiter: string;
+  public TrainingDetails: TrainingDetails;
   public NumericFields: Array<string>;
   public NonNumericFields: Array<string>;
   public Proportionality: string;
@@ -54,4 +71,4 @@ class DataTrainedModel extends Mongoose.Document {
   };
 }
 
-export { DataTrainedModel, DataTrainedSchema };
+export { DataTrainedModel, TrainingDetails, DataTrainedSchema };
