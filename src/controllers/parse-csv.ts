@@ -11,10 +11,7 @@ const parseCsv = function (request: Request, response: Response) {
   if (typeof filePath === "undefined" || filePath === "") return response.send("filePath is null or empty");
   const isParsed: boolean = csvFileParsing.parseCsv(filePath, ',');
 
-  response
-    .status(200)
-    .send(isParsed)
-    .end();
+  response.status(200).send(isParsed).end();
 };
 const uploadFiles = function (request: any, response: Response) {
   Upload(request, response, function (err: Error) {
