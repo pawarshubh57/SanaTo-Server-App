@@ -1,7 +1,6 @@
 const globalAny: any = global;
 import Mongoose from 'mongoose';
-import { readFileSync } from 'fs';
-import { join, resolve } from 'path';
+import { resolve } from 'path';
 import { MongoClient, Db } from 'mongodb';
 
 const mongoPort = 27000;
@@ -30,7 +29,7 @@ const mongoDbOpt: Mongoose.ConnectionOptions = {
     user: userName,
     password: password,
   },
-  useUnifiedTopology: true, // Use this paramenter option later... DeprecationWarning ignored
+  useUnifiedTopology: true, // Use this parameter option later... DeprecationWarning ignored
   // useFindAndModify: false
 };
 
@@ -38,7 +37,7 @@ const mongoDbServer = () =>
   new Promise((resolve: Function, reject: Function) => {
     const mongoClient: MongoClient = new MongoClient(mongoDbUrl, mongoDbOpt);
     mongoClient.on('connect', function() {
-      console.log('Database connection with MongoDb Driver succeded!!');
+      console.log('Database connection with MongoDb Driver succeeded!!');
       console.log('=======================================================================');
     });
 

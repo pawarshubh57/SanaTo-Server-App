@@ -1,7 +1,6 @@
 const globalAny: any = global;
 import Mongoose from 'mongoose';
-import { readFileSync } from 'fs';
-import { join, resolve } from 'path';
+import { resolve } from 'path';
 
 const mongoPort = 27000;
 const userName = 'yogeshs';
