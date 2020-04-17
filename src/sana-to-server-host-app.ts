@@ -36,15 +36,12 @@ Promise.resolve(mongoConnection())
       key: readFileSync(join(crtPath, 'device.key')),
     };
     App.use(Express.static(uploadPath));
-    App.get('/', function(request, response) {
-      response
-        .status(200)
-        .json({ msg: 'Server app is up and running!.' })
-        .end();
+    App.get('/', function (request, response) {
+      response.status(200).json({ msg: 'Server app is up and running!.' }).end();
     });
     var expressHttpsServer = https.createServer(httpsOptions, App);
     var portNumber = process.env.PORT || 3000;
-    expressHttpsServer.listen(portNumber, function() {
+    expressHttpsServer.listen(portNumber, function () {
       var address: any = this.address();
       if (!globalAny.dbConnection) {
         console.log('==========================================================================');

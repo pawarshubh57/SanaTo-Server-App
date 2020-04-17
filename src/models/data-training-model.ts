@@ -1,34 +1,5 @@
 import Mongoose from 'mongoose';
-
-/**
- * This enum is used to check process type.
- * Instead of using number format, it's better to use enum.
- *
- * @enum {number}
- */
-enum ProcessType {
-  numericOnly = 1,
-  dateOnly,
-  dateTime,
-  dateAndTime
-};
-/**
- * This is important class for training details.
- * This is used to execute proper function depending upon user provided information.
- *
- * @class TrainingDetails
- * @extends {Mongoose.Document}
- */
-class TrainingDetails extends Mongoose.Document {
-  public BaseField?: string;
-  public DateField?: string;
-  public ProcessType?: ProcessType;
-  public TimeField?: string;
-  public DateFormat?: string;
-  public TimeFormat?: string;
-  public LowerUnit?: number;
-  public UpperUnit?: number;
-}
+import { TrainingDetails } from '../helpers/models/training-details';
 
 const DataTrainedSchema: Mongoose.Schema<DataTrainedModel> = new Mongoose.Schema<DataTrainedModel>({
   PrimaryKeyIndicators: {
@@ -94,4 +65,4 @@ class DataTrainedModel extends Mongoose.Document {
   };
 }
 
-export { DataTrainedModel, TrainingDetails, ProcessType, DataTrainedSchema };
+export { DataTrainedModel, DataTrainedSchema };

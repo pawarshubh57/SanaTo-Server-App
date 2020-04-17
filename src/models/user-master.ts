@@ -89,7 +89,7 @@ UserMasterSchema.methods.generateAuthToken = function() {
       _id: userMaster._id.toHexString(),
       access: access,
     },
-    'floKapture@123'
+    'sanaTo@123'
   ).toString();
 
   userMaster.Tokens.push({

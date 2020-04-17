@@ -1,5 +1,5 @@
 {
-  "name": "SanaTo-nodejs-typescript-app",
+  "name": "SanaTo",
   "version": "1.0.0",
   "description": "",
   "main": "sana-to-server-host-app.ts",
@@ -18,6 +18,14 @@
     "Validations",
     "File Parsing"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonawane-yogesh/SanaTo-Server-App.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sonawane-yogesh/SanaTo-Server-App/issues"
+  },
+  "homepage": "https://github.com/sonawane-yogesh/SanaTo-Server-App#readme",
   "author": "Yogesh Sonawane",
   "license": "ISC",
   "engines": {

@@ -2,9 +2,10 @@ import { Request, Response } from 'express';
 import { csvFileParsing } from '../helpers';
 import { Upload } from '../utils/multer-config';
 import { sanaToService } from '../base-repositories/sana-to-db-service';
-import { DataTrainedModel, TrainingDetails } from '../models';
+import { DataTrainedModel} from '../models';
 import Mongoose from 'mongoose';
 import { ObjectId } from 'mongodb';
+import { TrainingDetails } from '../helpers/models/training-details';
 
 const parseCsv = function (request: Request, response: Response) {
   let filePath: string = '';
