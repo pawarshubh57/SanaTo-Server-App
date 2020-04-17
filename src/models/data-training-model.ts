@@ -1,5 +1,35 @@
 import Mongoose from 'mongoose';
 
+/**
+ * This enum is used to check process type.
+ * Instead of using number format, it's better to use enum.
+ *
+ * @enum {number}
+ */
+enum ProcessType {
+  numericOnly = 1,
+  dateOnly,
+  dateTime,
+  dateAndTime
+};
+/**
+ * This is important class for training details.
+ * This is used to execute proper function depending upon user provided information.
+ *
+ * @class TrainingDetails
+ * @extends {Mongoose.Document}
+ */
+class TrainingDetails extends Mongoose.Document {
+  public BaseField?: string;
+  public DateField?: string;
+  public ProcessType?: ProcessType;
+  public TimeField?: string;
+  public DateFormat?: string;
+  public TimeFormat?: string;
+  public LowerUnit?: number;
+  public UpperUnit?: number;
+}
+
 const DataTrainedSchema: Mongoose.Schema<DataTrainedModel> = new Mongoose.Schema<DataTrainedModel>({
   PrimaryKeyIndicators: {
     type: [String]
@@ -10,14 +40,8 @@ const DataTrainedSchema: Mongoose.Schema<DataTrainedModel> = new Mongoose.Schema
     required: false
   },
   TrainingDetails: {
-    type: new Mongoose.Schema<TrainingDetails>({
-      BaseField: { type: String },
-      DateField: { type: String },
-      ProcessType: { type: String },
-      TimeField: { type: String },
-      DateFormat: { type: String },
-      TimeFormat: { type: String },
-    })
+    type: TrainingDetails,
+    required: true
   },
   NumericFields: {
     type: [String]
@@ -47,14 +71,13 @@ const DataTrainedSchema: Mongoose.Schema<DataTrainedModel> = new Mongoose.Schema
   },
 });
 
-class TrainingDetails extends Mongoose.Document {
-  public BaseField?: string;
-  public DateField?: string;
-  public ProcessType?: string;
-  public TimeField?: string;
-  public DateFormat?: string;
-  public TimeFormat?: string;
-}
+/**
+ * This model is for data training purpose.
+ * This is used to calculate Proportionality and Trending.
+ *
+ * @class DataTrainedModel
+ * @extends {Mongoose.Document}
+ */
 class DataTrainedModel extends Mongoose.Document {
   public PrimaryKeyIndicators: Array<string>;
   public CsvDelimiter: string;
@@ -71,4 +94,4 @@ class DataTrainedModel extends Mongoose.Document {
   };
 }
 
-export { DataTrainedModel, TrainingDetails, DataTrainedSchema };
+export { DataTrainedModel, TrainingDetails, ProcessType, DataTrainedSchema };

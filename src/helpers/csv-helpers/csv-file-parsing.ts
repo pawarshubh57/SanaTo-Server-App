@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { stringExtensions, momentExtensions } from '..';
 import moment from 'moment';
-import { DataTrainedModel } from '../../models';
+import { DataTrainedModel, ProcessType } from '../../models';
 
 class CsvFileParsing {
   public parseCsv = function (filePath: string, delimiter: string): boolean {
@@ -94,7 +94,7 @@ class CsvFileParsing {
     }
   };
   public calculateProportionality = function (dataTrainedModel: DataTrainedModel): {} {
-    const splitRegExp = new RegExp(`\\,(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
+    const splitRegExp = new RegExp(`\\${dataTrainedModel.CsvDelimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
     const readStream = fs.readFileSync(dataTrainedModel.FileStatics.CompletePath);
     const descLines = readStream.toString().split('\n');
     const headers: Array<string> = descLines.shift().split(splitRegExp);
@@ -151,6 +151,37 @@ class CsvFileParsing {
       console.log(ex);
       return { ex };
     }
+  };
+
+  /**
+   * This function is to calculate Proportionality and Trending.
+   * This function can be used when model has TrainingDetails object attached.
+   * 
+   * Other function is: @alias calculateProportionality
+   *
+   * @param {DataTrainedModel} dataTrainedModel
+   */
+  public findProportionality = function (dataTrainedModel: DataTrainedModel) {
+    let processType = dataTrainedModel.TrainingDetails.ProcessType;
+    let numericLimits: { baseField: string, lowerLimit: number, upperLimit: number };
+    if (processType === ProcessType.numericOnly) {
+      numericLimits.baseField = dataTrainedModel.TrainingDetails.BaseField;
+      numericLimits.lowerLimit = dataTrainedModel.TrainingDetails.LowerUnit;
+      numericLimits.upperLimit = dataTrainedModel.TrainingDetails.UpperUnit;
+    }
+    
+    if (processType === ProcessType.dateOnly) { }
+    if (processType === ProcessType.dateTime) { }
+    if (processType === ProcessType.dateAndTime) { }
+    let args = {
+      delimiter: dataTrainedModel.CsvDelimiter,
+      dateFormat: dataTrainedModel.TrainingDetails.DateFormat,
+      timeFormat: dataTrainedModel.TrainingDetails.TimeFormat,
+      dateField: dataTrainedModel.TrainingDetails.DateField,
+      timeField: dataTrainedModel.TrainingDetails.TimeField,
+      baseField: dataTrainedModel.TrainingDetails.BaseField
+    }
+
   };
 }
 
