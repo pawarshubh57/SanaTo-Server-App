@@ -9,8 +9,8 @@ import { ObjectId } from 'mongodb';
 const parseCsv = function (request: Request, response: Response) {
   let filePath: string = '';
   if (typeof filePath === "undefined" || filePath === "") return response.send("filePath is null or empty");
-  const isParsed: boolean = csvFileParsing.parseCsv(filePath, ',');
-
+  const result: Array<any> | boolean = csvFileParsing.parseCsv(filePath, ',');
+  const isParsed: boolean = typeof result === "object" ? true : result;
   response.status(200).send(isParsed).end();
 };
 const uploadFiles = function (request: any, response: Response) {
@@ -33,7 +33,7 @@ const addDataTrainModel = function (request: Request, response: Response) {
   var proportionalityField: string = reqBody.ProportionalityField;
   var csvDelimiter: string = reqBody.CsvDelimiter;
 
-  const proportionality: string = csvFileParsing.getProportionality(filePath, ',', trainingModel.DateField, proportionalityField, trainingModel.DateFormat);
+  const proportionality: string | object = csvFileParsing.getProportionality(filePath, ',', trainingModel.DateField, proportionalityField, trainingModel.DateFormat);
   const trialModel: DataTrainedModel = {
     PrimaryKeyIndicators: primaryKeys,
     CsvDelimiter: csvDelimiter,

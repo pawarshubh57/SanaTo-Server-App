@@ -7,7 +7,7 @@ const parseCsvRoutes: string[][] = [
   ['api/parse-csv/parse', 'parse-csv#parseCsv', 'get'],
   ['api/parse-csv/upload-file', 'parse-csv#uploadFiles', 'post'],
   ['api/parse-csv/add-data-model', 'parse-csv#addDataTrainModel', 'post'],
-  ['api/parse-csv/calculate-proportion', 'parse-csv#calculateProportionality', 'get']
+  ['api/parse-csv/calculate-proportionality', 'parse-csv#calculateProportionality', 'get']
 ];
 const staticModelRoutes: string[][] = [
   ['api/static-model/add-model', 'static-model-validation#addStaticModel', 'post'],
