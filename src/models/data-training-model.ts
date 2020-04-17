@@ -11,8 +11,16 @@ const DataTrainedSchema: Mongoose.Schema<DataTrainedModel> = new Mongoose.Schema
     required: false
   },
   TrainingDetails: {
-    type: TrainingDetails,
-    required: true
+    type: new Mongoose.Schema<TrainingDetails>({
+      BaseField: { type: String, required: false },
+      DateField: { type: String, required: false },
+      ProcessType: { type: String, required: false },
+      TimeField: { type: String, required: false },
+      DateFormat: { type: String, required: false },
+      TimeFormat: { type: String, required: false },
+      LowerUnit: { type: String, required: false },
+      UpperUnit: { type: String, required: false }
+    })
   },
   NumericFields: {
     type: [String]

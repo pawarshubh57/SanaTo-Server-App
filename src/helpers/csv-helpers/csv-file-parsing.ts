@@ -1,7 +1,8 @@
 import fs from 'fs';
 import { momentExtensions } from '..';
 import moment from 'moment';
-import { DataTrainedModel, ProcessType } from '../../models';
+import { DataTrainedModel} from '../../models';
+import { ProcessType } from '../models/process-type';
 
 class CsvFileParsing {
   public parseCsv = function (filePath: string, delimiter: string): Array<any> | boolean {
