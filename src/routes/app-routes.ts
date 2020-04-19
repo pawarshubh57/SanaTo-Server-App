@@ -1,5 +1,5 @@
 const homeRoutes = [
-  ['api/home/get-status', 'home#getStatus', 'get'],
+  ['api/home/get-status', 'home#getStatus', 'get']
 ];
 const userMasterRoutes = [
   ['api/user-master/add-user', 'user-master#createUser', 'post'],
