@@ -1,7 +1,12 @@
-const homeRoutes = [['api/home/get-status', 'home#getStatus', 'get']];
+const homeRoutes = [
+  ['api/home/get-status', 'home#getStatus', 'get'],
+  ['home/getStatus', 'home#getStatus', 'get'],
+  
+];
+// added comment to app-routes 
+// second comment to app-routes
 const userMasterRoutes = [
   ['api/user-master/add-user', 'user-master#createUser', 'post'],
-  ['api/user-master/user-login', 'user-master#userLogin', 'post']
 ];
 const parseCsvRoutes: string[][] = [
   ['api/parse-csv/parse', 'parse-csv#parseCsv', 'get'],
