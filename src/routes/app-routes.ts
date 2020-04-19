@@ -2,6 +2,7 @@ const homeRoutes = [
   ['api/home/get-status', 'home#getStatus', 'get'],
   ['home/getStatus', 'home#getStatus', 'get']
 ];
+// added comment to app-routes 
 const userMasterRoutes = [
   ['api/user-master/add-user', 'user-master#createUser', 'post'],
 ];
