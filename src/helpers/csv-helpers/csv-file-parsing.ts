@@ -1,20 +1,19 @@
 import fs from 'fs';
 import { momentExtensions } from '..';
 import moment from 'moment';
-import { DataTrainedModel} from '../../models';
+import { DataTrainedModel } from '../../models';
 import { ProcessType } from '../models/process-type';
 
 class CsvFileParsing {
   public parseCsv = function (filePath: string, delimiter: string): Array<any> | boolean {
     const splitRegExp = new RegExp(`\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
+    if (!fs.existsSync(filePath)) return false;
     const readStream = fs.readFileSync(filePath);
     const descLines = readStream.toString().split('\n');
     const headers: Array<string> = descLines.shift().split(splitRegExp);
-    let processLineCount: number = -1;
     const processedArray: Array<any> = [];
     try {
       for (const descLine of descLines) {
-        ++processLineCount;
         if (typeof descLine === 'undefined' || descLine === null || descLine === '') continue;
         const splitedLines = descLine.split(splitRegExp);
         const csvRecord: any = {};
@@ -32,7 +31,7 @@ class CsvFileParsing {
       return false;
     }
   };
-  
+
   public getHeaders = function (filePath: string, delimiter: string): Array<string> {
     const splitRegExp = new RegExp(`\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');
     const readStream = fs.readFileSync(filePath);
@@ -64,16 +63,23 @@ class CsvFileParsing {
         exp1 < exp2 ? inc++ : dec++;
       }
       var proportionality = inc > dec ? 'Directly' : 'Inversely';
-      return { proportionality };
+      return proportionality;
     } catch (ex) {
       console.log(ex);
     }
   };
-
+  /**
+   * This function can be used when arguments Date and Time format is known.
+   *
+   * @memberof CsvFileParsing
+   */
   public calculateProportionality = function (dataTrainedModel: DataTrainedModel): {} {
     try {
       const dataArray: Array<any> | boolean = this.parseCsv(dataTrainedModel.FileStatics.CompletePath, dataTrainedModel.CsvDelimiter);
       if (typeof dataArray === "boolean") return { msg: "Unable to process provided csv file", fileDetails: dataTrainedModel.FileStatics };
+
+      var proportion: {} = this.findProportionality(dataTrainedModel, dataArray);
+      console.log(proportion);
 
       let processedArray: any[] = dataArray.sort(function (a: any, b: any): any {
         var momentA = moment(a[dataTrainedModel.TrainingDetails.DateField], dataTrainedModel.TrainingDetails.DateFormat);
@@ -121,13 +127,51 @@ class CsvFileParsing {
    *
    * @param {DataTrainedModel} dataTrainedModel
    */
-  public findProportionality = function (dataTrainedModel: DataTrainedModel) {
+  public findProportionality = function (dataTrainedModel: DataTrainedModel, dataArray: any[]) {
+    // const dataArray: Array<any> | boolean = this.parseCsv(dataTrainedModel.FileStatics.CompletePath, dataTrainedModel.CsvDelimiter);
+    // if (typeof dataArray === "boolean") return { msg: "Unable to process provided csv file", fileDetails: dataTrainedModel.FileStatics };
+
     let processType = dataTrainedModel.TrainingDetails.ProcessType;
-    let numericLimits: { baseField: string, lowerLimit: number, upperLimit: number };
-    if (processType === ProcessType.numericOnly) {
-      numericLimits.baseField = dataTrainedModel.TrainingDetails.BaseField;
-      numericLimits.lowerLimit = dataTrainedModel.TrainingDetails.LowerUnit;
-      numericLimits.upperLimit = dataTrainedModel.TrainingDetails.UpperUnit;
+
+    if (processType === ProcessType["numericOnly"]) {
+      let numericLimits: { baseField: string, lowerLimit: number, upperLimit: number } = {
+        baseField: dataTrainedModel.TrainingDetails.BaseField,
+        lowerLimit: dataTrainedModel.TrainingDetails.LowerUnit,
+        upperLimit: dataTrainedModel.TrainingDetails.UpperUnit
+      };
+      // If this is the case, then we need to use other function in which date and time field is not used.
+      // lowerLimit will be used as number of records can be used as 1 month records.
+      // upperLimit will be used as total records needs to use.
+      // slots will be like: var slots = upperLimit / lowerLimit. Generally, slots should be 12 (12 months records).
+      let processedArray: any[] = dataArray.sort((a: any, b: any): any => {
+        let valA: number = a[numericLimits.baseField];
+        let valB: number = b[numericLimits.baseField];
+        return valA > valB;
+      });
+      let trendInc: number = 0;
+      let trendDesc: number = 0;
+      let inc: number = 0;
+      let dec: number = 0;
+      let slot = Math.round(numericLimits.upperLimit / numericLimits.lowerLimit);
+      for (let cnt = 0; cnt < processedArray.length; cnt++) {
+        // let element: any = processedArray[cnt];
+        let slots: any = processedArray.slice(cnt, (cnt + slot));
+        cnt += slots.length - 1;
+        let monthTrendInc: number = 0;
+        let monthTrendDesc: number = 0;
+        for (let i = 0; i < slots.length - 1; i++) {
+          var exp1 = Number.parseInt(slots[i][dataTrainedModel.ProportionalityField]);
+          var exp2 = Number.parseInt(slots[i + 1][dataTrainedModel.ProportionalityField]);
+          exp1 < exp2 ? inc++ : dec++;
+          exp1 < exp2 ? monthTrendInc++ : monthTrendDesc++;
+        }
+        monthTrendInc > monthTrendDesc ? trendInc++ : trendDesc++;
+        if (cnt >= numericLimits.upperLimit) break;
+      }
+      var proportionality = inc > dec ? 'Directly' : 'Inversely';
+      let overAllTrending: string = trendInc > trendDesc ? "Directly" : "Inversely";
+
+      return { proportionality, overAllTrending }
     }
     // This is sample commented line after switching git branch...
     // branch name: yogeshs 

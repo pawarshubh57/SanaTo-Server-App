@@ -11,15 +11,7 @@ const writeFile = function (request: Request, response: Response) {
   var filePath = path.join(__dirname, "../created-files", "sample.txt");
   if (!fs.existsSync(filePath)) {
     fs.mkdirSync(filePath);
-  };
-  /*
-  for (let d = 0; d <= 1499; d++) {
-    let startDate = new Date("01/01/2019")
-    let endDate = new Date("12/31/2019");
-    var dateTime = momentExtensions.randomDateBetweenWithTime({ startDate, endDate });
-    console.log(dateTime);
-  }
-  */
+  };  
   let data: any[] = [];
   data.push(Object.values(header));
   let startDate = new Date("01/01/2019")

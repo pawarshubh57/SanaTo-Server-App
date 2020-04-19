@@ -5,8 +5,8 @@
  * @enum {number}
  */
 export enum ProcessType {
-    numericOnly = 1,
-    dateOnly,
-    dateTime,
-    dateAndTime
+    numericOnly = "numericOnly",
+    dateOnly = "dateOnly",
+    dateTime = "dateTime",
+    dateAndTime = "dateAndTime"
 };
