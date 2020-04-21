@@ -11,7 +11,7 @@ const writeFile = function (request: Request, response: Response) {
   var filePath = path.join(__dirname, "../created-files", "sample.txt");
   if (!fs.existsSync(filePath)) {
     fs.mkdirSync(filePath);
-  };  
+  };
   let data: any[] = [];
   data.push(Object.values(header));
   let startDate = new Date("01/01/2019")
@@ -33,7 +33,8 @@ const writeFile = function (request: Request, response: Response) {
     data.push(r);
   }
   let fileContent = data.join("\n");
-  fs.writeFileSync(filePath, fileContent);
+  fs.writeFileSync(filePath, fileContent); // write csv
+  console.log(fileContent);
   response.status(200).send("Ok").end();
 }
 
