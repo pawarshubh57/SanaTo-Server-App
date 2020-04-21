@@ -33,8 +33,8 @@ const writeFile = function (request: Request, response: Response) {
     data.push(r);
   }
   let fileContent = data.join("\n");
-  fs.writeFileSync(filePath, fileContent); // write csv
-  console.log(fileContent);
+  fs.writeFileSync(filePath, fileContent);
+  // code removed!...
   response.status(200).send("Ok").end();
 }
 
