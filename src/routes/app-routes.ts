@@ -1,6 +1,7 @@
 const homeRoutes = [
   ['api/home/get-status', 'home#getStatus', 'get']
 ];
+// comment added from sanato branch
 const userMasterRoutes = [
   ['api/user-master/add-user', 'user-master#createUser', 'post'],
 ];
