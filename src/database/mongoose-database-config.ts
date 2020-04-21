@@ -1,6 +1,7 @@
 const globalAny: any = global;
 import Mongoose from 'mongoose';
-import { resolve } from 'path';
+import { readFileSync } from "fs";
+import { resolve, join } from 'path';
 
 const mongoPort = 27000;
 const userName = 'yogeshs';
@@ -17,8 +18,8 @@ const mongoDbOpt: Mongoose.ConnectionOptions = {
   autoIndex: false,
   connectTimeoutMS: 10000,
   socketTimeoutMS: 45000,
-  // sslKey: readFileSync(join(crtPath, 'mongodb.pem')),
-  // sslCert: readFileSync(join(crtPath, 'mongodb-cert.crt')),
+  sslKey: readFileSync(join(crtPath, 'mongodb.pem')),
+  sslCert: readFileSync(join(crtPath, 'mongodb-cert.crt')),
   dbName: databaseName,
   family: 4,
   readPreference: 'secondary',
@@ -33,22 +34,22 @@ const mongoDbOpt: Mongoose.ConnectionOptions = {
   useFindAndModify: false,
 };
 
-const dbServer = function() {
+const dbServer = function () {
   Mongoose.Promise = global.Promise;
   return Mongoose.createConnection(mongoDbUrl, mongoDbOpt)
-    .on('connected', function() {
+    .on('connected', function () {
       console.log('Database connection succeeded!!');
       console.log('=======================================================================');
     })
-    .on('disconnected', function() {
+    .on('disconnected', function () {
       console.log('Database connection has been disconnected!!');
       console.log('=======================================================================');
     })
-    .on('close', function() {
+    .on('close', function () {
       console.log('Database connection is closed!!');
       console.log('=======================================================================');
     })
-    .on('error', function() {
+    .on('error', function () {
       console.log('Database connection failed!!');
       console.log('=======================================================================');
     });

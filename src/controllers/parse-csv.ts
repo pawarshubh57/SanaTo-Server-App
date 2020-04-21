@@ -30,11 +30,11 @@ const addDataTrainModel = function (request: Request, response: Response) {
   let trainingModel: TrainingDetails = reqBody.TrainingDetails;
   var primaryKeys: Array<string> = reqBody.PrimaryKeys;
   var fileStatic: any = reqBody.FileDetails;
-  var filePath: string = fileStatic.CompletePath;
+  // var filePath: string = fileStatic.CompletePath;
   var proportionalityField: string = reqBody.ProportionalityField;
   var csvDelimiter: string = reqBody.CsvDelimiter;
 
-  const proportionality: string | object = csvFileParsing.getProportionality(filePath, ',', trainingModel.DateField, proportionalityField, trainingModel.DateFormat);
+  const proportionality: string | object = ""; // csvFileParsing.getProportionality(filePath, ',', trainingModel.DateField, proportionalityField, trainingModel.DateFormat);
   const trialModel: DataTrainedModel = {
     PrimaryKeyIndicators: primaryKeys,
     CsvDelimiter: csvDelimiter,
@@ -65,6 +65,18 @@ const calculateProportionality = function (request: Request, response: Response)
       console.log(err);
       response.status(500).json(err).end();
     });
-}
+};
+const findProportionality = function(request: Request, response: Response){
+  let id: string | ObjectId = request.query.id;
+  sanaToService.DataTrainModel.findById(id)
+    .then((model) => {
+      let prop: {} = csvFileParsing.findProportionality(model);
+      response.status(200).json(prop).end();
+    })
+    .catch((err) => {
+      console.log(err);
+      response.status(500).json(err).end();
+    });
+};
 
-export { parseCsv, uploadFiles, addDataTrainModel, calculateProportionality };
+export { parseCsv, uploadFiles, addDataTrainModel, calculateProportionality, findProportionality };
