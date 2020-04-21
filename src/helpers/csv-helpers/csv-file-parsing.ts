@@ -78,9 +78,6 @@ class CsvFileParsing {
       const dataArray: Array<any> | boolean = this.parseCsv(dataTrainedModel.FileStatics.CompletePath, dataTrainedModel.CsvDelimiter);
       if (typeof dataArray === "boolean") return { msg: "Unable to process provided csv file", fileDetails: dataTrainedModel.FileStatics };
 
-      var proportion: {} = this.findProportionality(dataTrainedModel, dataArray);
-      console.log(proportion);
-
       let processedArray: any[] = dataArray.sort(function (a: any, b: any): any {
         var momentA = moment(a[dataTrainedModel.TrainingDetails.DateField], dataTrainedModel.TrainingDetails.DateFormat);
         var momentB = moment(b[dataTrainedModel.TrainingDetails.DateField], dataTrainedModel.TrainingDetails.DateFormat);
@@ -127,13 +124,13 @@ class CsvFileParsing {
    *
    * @param {DataTrainedModel} dataTrainedModel
    */
-  public findProportionality = function (dataTrainedModel: DataTrainedModel, dataArray: any[]) {
-    // const dataArray: Array<any> | boolean = this.parseCsv(dataTrainedModel.FileStatics.CompletePath, dataTrainedModel.CsvDelimiter);
-    // if (typeof dataArray === "boolean") return { msg: "Unable to process provided csv file", fileDetails: dataTrainedModel.FileStatics };
+  public findProportionality = function (dataTrainedModel: DataTrainedModel) {
+    const dataArray: Array<any> | boolean = this.parseCsv(dataTrainedModel.FileStatics.CompletePath, dataTrainedModel.CsvDelimiter);
+    if (typeof dataArray === "boolean") return { msg: "Unable to process provided csv file", fileDetails: dataTrainedModel.FileStatics };
 
     let processType = dataTrainedModel.TrainingDetails.ProcessType;
 
-    if (processType === ProcessType["numericOnly"]) {
+    if (processType === "numericOnly") {
       let numericLimits: { baseField: string, lowerLimit: number, upperLimit: number } = {
         baseField: dataTrainedModel.TrainingDetails.BaseField,
         lowerLimit: dataTrainedModel.TrainingDetails.LowerUnit,
@@ -175,18 +172,19 @@ class CsvFileParsing {
     }
     // This is sample commented line after switching git branch...
     // branch name: yogeshs 
-    if (processType === ProcessType.dateOnly) { }
-    if (processType === ProcessType.dateTime) { }
-    if (processType === ProcessType.dateAndTime) { }
-    let args = {
-      delimiter: dataTrainedModel.CsvDelimiter,
-      dateFormat: dataTrainedModel.TrainingDetails.DateFormat,
-      timeFormat: dataTrainedModel.TrainingDetails.TimeFormat,
-      dateField: dataTrainedModel.TrainingDetails.DateField,
-      timeField: dataTrainedModel.TrainingDetails.TimeField,
-      baseField: dataTrainedModel.TrainingDetails.BaseField
+    if (processType === "dateTime") { }
+    if (processType === "dateOnly") { }
+    if (processType === "dateAndTime") {
+      let args = {
+        delimiter: dataTrainedModel.CsvDelimiter,
+        dateFormat: dataTrainedModel.TrainingDetails.DateFormat,
+        timeFormat: dataTrainedModel.TrainingDetails.TimeFormat,
+        dateField: dataTrainedModel.TrainingDetails.DateField,
+        timeField: dataTrainedModel.TrainingDetails.TimeField
+      };
+      console.log(args);
     }
-
+    return "Ok";
   };
 }
 
