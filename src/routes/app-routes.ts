@@ -1,6 +1,8 @@
 const homeRoutes = [
-  ['api/home/get-status', 'home#getStatus', 'get'],
+  ['api/home/get-status', 'home#getStatus', 'get']
 ];
+// comment added from sanato branch
+// commit from shubhangip branch...
 const userMasterRoutes = [
   ['api/user-master/add-user', 'user-master#createUser', 'post'],
 ];
@@ -8,7 +10,8 @@ const parseCsvRoutes: string[][] = [
   ['api/parse-csv/parse', 'parse-csv#parseCsv', 'get'],
   ['api/parse-csv/upload-file', 'parse-csv#uploadFiles', 'post'],
   ['api/parse-csv/add-data-model', 'parse-csv#addDataTrainModel', 'post'],
-  ['api/parse-csv/calculate-proportionality', 'parse-csv#calculateProportionality', 'get']
+  ['api/parse-csv/calculate-proportionality', 'parse-csv#calculateProportionality', 'get'],
+  ['api/parse-csv/find-proportionality', 'parse-csv#findProportionality', 'get']
 ];
 const staticModelRoutes: string[][] = [
   ['api/static-model/add-model', 'static-model-validation#addStaticModel', 'post'],
