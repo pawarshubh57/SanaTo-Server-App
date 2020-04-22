@@ -2,7 +2,6 @@ import fs from 'fs';
 import { momentExtensions } from '..';
 import moment from 'moment';
 import { DataTrainedModel } from '../../models';
-import { ProcessType } from '../models/process-type';
 
 class CsvFileParsing {
   public parseCsv = function (filePath: string, delimiter: string): Array<any> | boolean {
@@ -168,10 +167,11 @@ class CsvFileParsing {
       var proportionality = inc > dec ? 'Directly' : 'Inversely';
       let overAllTrending: string = trendInc > trendDesc ? "Directly" : "Inversely";
 
-      return { proportionality, overAllTrending }
+      return { proportionality, overAllTrending };
     }
     // This is sample commented line after switching git branch...
     // branch name: yogeshs 
+    // Shubhangi will start on following conditions...
     if (processType === "dateTime") { }
     if (processType === "dateOnly") { }
     if (processType === "dateAndTime") {
