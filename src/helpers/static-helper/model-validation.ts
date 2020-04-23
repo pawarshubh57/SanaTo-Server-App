@@ -24,12 +24,7 @@ class ModelValidation {
         dates.find((v: DateField) => {
           if (v.dateColumn === d) {
             var date: Date = data[d];
-            // var testDate = moment(date);
-            // var mDate = moment(date, v.format, true);
-            // var rtt = mDate.isValid();
-            // console.log(rtt);
             var isValidDate = moment.parseZone(date, v.format, true).isValid();
-
             if (!isValidDate) {
               errors.push({
                 column: v.dateColumn,
@@ -68,18 +63,20 @@ class ModelValidation {
       return errors;
     }
   };
-  public checkEmail = function (value: string, o: OtherFields, errors: Array<ErrorField>){
+
+  public checkEmail = function (value: string, o: OtherFields, errors: Array<ErrorField>) {
     // var test = validator.isEmail(value);
     var testRegex = new RegExp(o.regex);
     var isEmailCheck = testRegex.test(value);
     if (isEmailCheck) return errors;
-   return errors.push({
+    return errors.push({
       column: o.fieldName,
       value: value,
       msg: `${o.fieldName} is not valid`,
       error: null
     });
   };
+
   public checkLength = function (value: string, o: OtherFields, errors: Array<ErrorField>) {
     var lengthCheck =
       (o.maxLength === 0 && o.minLength === 0) ||
@@ -90,9 +87,10 @@ class ModelValidation {
     return errors.push({
       column: o.fieldName,
       value: value,
-      msg: `Length of ${o.fieldName} must be between ${o.maxLength} and ${o.minLength}`,
+      msg: `Length of ${o.fieldName} must be between ${o.minLength} and ${o.maxLength}`,
     });
   };
+
   public checkNull = function (value: string | number, o: OtherFields, errors: Array<ErrorField>) {
     var nullCheck = (value === null) === o.canBeNull ? true : false;
     if (nullCheck) return errors;
@@ -102,6 +100,7 @@ class ModelValidation {
       msg: `${o.fieldName} can not null`,
     });
   };
+
   public checkType = function (value: string, o: OtherFields, type: any, errors: Array<ErrorField>) {
     var typeCheck = typeof value === type ? true : false;
     if (typeCheck) return errors;
@@ -111,6 +110,7 @@ class ModelValidation {
       msg: `${o.fieldName} is not of type ${o.type}`,
     });
   };
+
   public checkNanValue = function (value: any, o: OtherFields, errors: Array<ErrorField>) {
     if (isNaN(value)) {
       return errors.push({
@@ -120,6 +120,7 @@ class ModelValidation {
       });
     }
   };
+
   public checkMinMaxValue = function (value: number, o: OtherFields, errors: Array<ErrorField>) {
     var valueCheck =
       (o.minValue === 0 && o.maxValue === 0) || (value <= o.maxValue && value >= o.minValue)
@@ -132,7 +133,8 @@ class ModelValidation {
       msg: `Value must be between ${o.minValue} and ${o.maxValue}`,
     });
   };
-}
+  
+};
 
 const modelValidation: ModelValidation = new ModelValidation();
 export { modelValidation, ModelValidation };
