@@ -180,21 +180,23 @@ class CsvFileParsing {
       timeField: dataTrainedModel.TrainingDetails.TimeField
     };
     if (processType === "dateTime") {
-      let proportionality: any = this.calculateProportionality(dataArray, args.baseField, args.dateFormat, dataTrainedModel.ProportionalityField);
+      let proportionality: any = this.calculateProportionality(dataArray, args.dateField, args.dateFormat, dataTrainedModel.ProportionalityField);
       return proportionality;
     }
     if (processType === "dateOnly") {
-      let proportionality: any = this.calculateProportionality(dataArray, args.baseField, args.dateFormat, dataTrainedModel.ProportionalityField);
+      let proportionality: any = this.calculateProportionality(dataArray, args.dateField, args.dateFormat, dataTrainedModel.ProportionalityField);
       return proportionality;
     }
     if (processType === "dateAndTime") {
+      const dateCustomField: string = "dateTime-customField";
+      const dateCustomFormat: string = "dateTime-customFormat";
       dataArray.forEach(function (da: any) {
         let dateTime: string = da[args.dateField].trim() + " " + da[args.timeField].trim();
         let dateTimeFormat: string = args.dateFormat.trim().concat(" ", args.timeFormat).trim();
-        da["dateTime-customField"] = dateTime;
-        da["dateTime-customFormat"] = dateTimeFormat;
+        da[dateCustomField] = dateTime;
+        da[dateCustomFormat] = dateTimeFormat;
       });
-      let proportionality: any = this.calculateProportionality(dataArray, "dateTime-customField", "dateTime-customFormat", dataTrainedModel.ProportionalityField);
+      let proportionality: any = this.calculateProportionality(dataArray, dateCustomField, dateCustomFormat, dataTrainedModel.ProportionalityField);
       return proportionality;
     }
     return "Ok";
