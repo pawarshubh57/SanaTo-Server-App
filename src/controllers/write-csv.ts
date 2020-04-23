@@ -7,7 +7,7 @@ var evaluate: any = require("evaluatex");
 
 const writeFile = function (request: Request, response: Response) {
   let input: { dateFormat: string, name: string } = request.body;
-  var header = { 0: "RowId", 1: "Name", 3: "CardNo", 4: "ContactNo", 5: "RandomNumber", 6: "Date", 7: "Time" };
+  var header = { 0: "RowId", 1: "Name", 3: "CardNo", 4: "ContactNo", 5: "RandomNumber", 6: "Date", 7: "Time", 8: "DateTime" };
   var filePath = path.join(__dirname, "../created-files", "sample.txt");
   if (!fs.existsSync(filePath)) {
     fs.mkdirSync(filePath);
@@ -36,7 +36,8 @@ const writeFile = function (request: Request, response: Response) {
   }
   let fileContent = data.join("\n");
   fs.writeFileSync(filePath, fileContent);
-  response.status(200).send("Ok").end();
+  response.sendFile(filePath);
+  // response.status(200).send("Ok").end();
 }
 
 const evaluatex = function (request: Request, response: Response) {

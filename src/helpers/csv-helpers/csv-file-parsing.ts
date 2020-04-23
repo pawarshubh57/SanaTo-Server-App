@@ -93,7 +93,7 @@ class CsvFileParsing {
         let date: string = element[dateTimeField];
         let monthDays: { daysInMonth: number, daysArray: any[] } =
           momentExtensions.daysOfMonth(cnt, date, dateTimeField, processedArray);
-        cnt += (monthDays.daysInMonth) - 1;
+        cnt += (monthDays.daysArray.length) - 1;
         let monthTrendInc: number = 0;
         let monthTrendDesc: number = 0;
         for (let i = 0; i < monthDays.daysArray.length - 1; i++) {
@@ -180,11 +180,11 @@ class CsvFileParsing {
       timeField: dataTrainedModel.TrainingDetails.TimeField
     };
     if (processType === "dateTime") {
-      let proportionality: any = this.calculateProportionality(dataArray, args.dateField, "", dataTrainedModel.ProportionalityField);
+      let proportionality: any = this.calculateProportionality(dataArray, args.baseField, args.dateFormat, dataTrainedModel.ProportionalityField);
       return proportionality;
     }
     if (processType === "dateOnly") {
-      let proportionality: any = this.calculateProportionality(dataArray, args.dateField, "", dataTrainedModel.ProportionalityField);
+      let proportionality: any = this.calculateProportionality(dataArray, args.baseField, args.dateFormat, dataTrainedModel.ProportionalityField);
       return proportionality;
     }
     if (processType === "dateAndTime") {
@@ -199,7 +199,7 @@ class CsvFileParsing {
     }
     return "Ok";
   };
-}
+};
 
 const csvFileParsing: CsvFileParsing = new CsvFileParsing();
 
