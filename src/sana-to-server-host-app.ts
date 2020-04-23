@@ -1,6 +1,7 @@
 console.clear();
 const globalAny: any = global;
 import https from 'https';
+import http from 'http';
 import Express from 'express';
 import { json, urlencoded } from 'body-parser';
 import Cors from 'cors';
@@ -39,7 +40,8 @@ Promise.resolve(mongoConnection())
     App.get('/', function (request, response) {
       response.status(200).json({ msg: 'Server app is up and running!.' }).end();
     });
-    var expressHttpsServer = https.createServer(httpsOptions, App);
+    // var expressHttpsServer = https.createServer(httpsOptions, App);
+    var expressHttpsServer = http.createServer(App);
     var portNumber = process.env.PORT || 3000;
     expressHttpsServer.listen(portNumber, function () {
       var address: any = this.address();

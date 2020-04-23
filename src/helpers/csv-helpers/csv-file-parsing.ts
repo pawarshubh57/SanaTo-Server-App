@@ -1,7 +1,8 @@
 import fs from 'fs';
 import { momentExtensions } from '..';
 import moment from 'moment';
-import { DataTrainedModel } from '../../models';
+var _ = require('lodash');
+import { DataTrainedModel, DateField } from '../../models';
 
 class CsvFileParsing {
   public parseCsv = function (filePath: string, delimiter: string): Array<any> | boolean {
@@ -128,6 +129,7 @@ class CsvFileParsing {
     if (typeof dataArray === "boolean") return { msg: "Unable to process provided csv file", fileDetails: dataTrainedModel.FileStatics };
 
     let processType = dataTrainedModel.TrainingDetails.ProcessType;
+    let dateFormat = dataTrainedModel.TrainingDetails.DateFormat;
 
     if (processType === "numericOnly") {
       let numericLimits: { baseField: string, lowerLimit: number, upperLimit: number } = {
@@ -173,7 +175,52 @@ class CsvFileParsing {
     // branch name: yogeshs 
     // Shubhangi will start on following conditions...
     if (processType === "dateTime") { }
-    if (processType === "dateOnly") { }
+    if (processType === "dateOnly") {
+      /* Sort Array list date wise */
+      try {
+        let sortDataArray: any[] = _.sortBy(dataArray, function (o: any) {
+          return moment(o.Date).format(dataTrainedModel.TrainingDetails.DateFormat);
+        });
+
+        const monthArray: Array<any> = [];
+        var startDate: any = sortDataArray[0].Date;
+        let inc: number = 0;
+        let dec: number = 0;
+        let trendInc: number = 0;
+        let trendDesc: number = 0;
+        sortDataArray.forEach((item: any) => {
+          let result: boolean = getMonthwiseData(startDate, item.Date);
+          if (result) {
+            monthArray.push(item);
+            console.log(monthArray);
+          }
+          else {
+            startDate = item.Date;
+            let monthTrendInc: number = 0;
+            let monthTrendDesc: number = 0;
+            for (let cnt = 0; cnt < monthArray.length; cnt++) {
+              var exp1 = Number.parseInt(monthArray[cnt][dataTrainedModel.ProportionalityField]);
+              var exp2 = Number.parseInt(monthArray[cnt + 1][dataTrainedModel.ProportionalityField]);
+              exp1 < exp2 ? inc++ : dec++;
+              exp1 < exp2 ? monthTrendInc++ : monthTrendDesc++;
+            }
+            monthTrendInc > monthTrendDesc ? trendInc++ : trendDesc++;
+
+            monthArray.length = 0;
+            monthArray.push(item);
+          }
+        });
+        var proportionality = inc > dec ? 'Directly' : 'Inversely';
+        let overAllTrending: string = trendInc > trendDesc ? "Directly" : "Inversely";
+
+        return { proportionality, overAllTrending };
+      }
+      catch (ex) {
+        console.log(ex);
+        return { ex };
+      }
+
+    }
     if (processType === "dateAndTime") {
       let args = {
         delimiter: dataTrainedModel.CsvDelimiter,
@@ -186,6 +233,16 @@ class CsvFileParsing {
     }
     return "Ok";
   };
+}
+
+const getMonthwiseData = function (startDate: any, currentDate: any) {
+  var res: boolean = moment(startDate).isSame(currentDate, 'month');
+  if (res) {
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 const csvFileParsing: CsvFileParsing = new CsvFileParsing();
