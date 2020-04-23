@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { csvFileParsing } from '../helpers';
 import { Upload } from '../utils/multer-config';
 import { sanaToService } from '../base-repositories/sana-to-db-service';
-import { DataTrainedModel} from '../models';
+import { DataTrainedModel } from '../models';
 import Mongoose from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { TrainingDetails } from '../helpers/models/training-details';
@@ -58,7 +58,7 @@ const calculateProportionality = function (request: Request, response: Response)
   let id: string | ObjectId = request.query.id;
   sanaToService.DataTrainModel.findById(id)
     .then((model) => {
-      let prop: {} = csvFileParsing.calculateProportionality(model);
+      let prop: {} = {}; // csvFileParsing.calculateProportionality(model);
       response.status(200).json(prop).end();
     })
     .catch((err) => {
@@ -66,7 +66,7 @@ const calculateProportionality = function (request: Request, response: Response)
       response.status(500).json(err).end();
     });
 };
-const findProportionality = function(request: Request, response: Response){
+const findProportionality = function (request: Request, response: Response) {
   let id: string | ObjectId = request.query.id;
   sanaToService.DataTrainModel.findById(id)
     .then((model) => {

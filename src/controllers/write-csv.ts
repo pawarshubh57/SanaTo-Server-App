@@ -20,6 +20,7 @@ const writeFile = function (request: Request, response: Response) {
     var randomValue = Math.floor((Math.random() * 200) + cnt);
     var dateTime = momentExtensions.randomDateBetweenWithTime({ startDate, endDate });
     let momentInstance = moment(dateTime);
+    let dateWithTime: string = momentInstance.format(input.dateFormat) + " " + momentInstance.format("hh:mm:ss A");
     let row = {
       RowId: (cnt + 1),
       Name: input.name,
@@ -27,13 +28,14 @@ const writeFile = function (request: Request, response: Response) {
       ContactNo: "(123) 456-4567",
       RandomNumber: randomValue,
       Date: momentInstance.format(input.dateFormat),
-      Time: momentInstance.format("hh:mm:ss A"),// "hh:mm:ss A"
+      Time: momentInstance.format("hh:mm:ss A"), // "hh:mm:ss A"
+      DateTime: dateWithTime
     };
     var r = Object.values(row);
     data.push(r);
   }
   let fileContent = data.join("\n");
-  fs.writeFileSync(filePath, fileContent); 
+  fs.writeFileSync(filePath, fileContent);
   response.status(200).send("Ok").end();
 }
 
