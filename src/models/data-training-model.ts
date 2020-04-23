@@ -34,8 +34,9 @@ const DataTrainedSchema: Mongoose.Schema<DataTrainedModel> = new Mongoose.Schema
   Trending: {
     type: String
   },
-  ProportionalityColumn: {
-    type: String
+  ProportionalityField: {
+    type: String,
+    required: true
   },
   FileStatics: {
     type: {
