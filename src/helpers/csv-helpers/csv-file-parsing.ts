@@ -177,39 +177,58 @@ class CsvFileParsing {
     if (processType === "dateTime") { }
     if (processType === "dateOnly") {
       /* Sort Array list date wise */
+
+      let dateField: string = dataTrainedModel.TrainingDetails.BaseField;
       try {
         let sortDataArray: any[] = _.sortBy(dataArray, function (o: any) {
-          return moment(o.Date).format(dataTrainedModel.TrainingDetails.DateFormat);
+          return moment(o[dateField]).format(dataTrainedModel.TrainingDetails.DateFormat);
         });
 
-        const monthArray: Array<any> = [];
-        var startDate: any = sortDataArray[0].Date;
         let inc: number = 0;
         let dec: number = 0;
         let trendInc: number = 0;
         let trendDesc: number = 0;
-        sortDataArray.forEach((item: any) => {
-          let result: boolean = getMonthwiseData(startDate, item.Date);
-          if (result) {
-            monthArray.push(item);
-            console.log(monthArray);
+        for (let cnt = 0; cnt < sortDataArray.length; cnt++) {
+          let element: any = sortDataArray[cnt];
+          let date: string = element[dataTrainedModel.TrainingDetails.BaseField];
+          let monthDays: any[] =
+            getMonthwiseData(cnt, date, dataTrainedModel.TrainingDetails.BaseField, sortDataArray);
+          cnt += monthDays.length - 1;
+          let monthTrendInc: number = 0;
+          let monthTrendDesc: number = 0;
+          for (let i = 0; i < monthDays.length - 1; i++) {
+            var exp1 = Number.parseInt(monthDays[i][dataTrainedModel.ProportionalityField]);
+            var exp2 = Number.parseInt(monthDays[i + 1][dataTrainedModel.ProportionalityField]);
+            exp1 < exp2 ? inc++ : dec++;
+            exp1 < exp2 ? monthTrendInc++ : monthTrendDesc++;
           }
-          else {
-            startDate = item.Date;
-            let monthTrendInc: number = 0;
-            let monthTrendDesc: number = 0;
-            for (let cnt = 0; cnt < monthArray.length; cnt++) {
-              var exp1 = Number.parseInt(monthArray[cnt][dataTrainedModel.ProportionalityField]);
-              var exp2 = Number.parseInt(monthArray[cnt + 1][dataTrainedModel.ProportionalityField]);
-              exp1 < exp2 ? inc++ : dec++;
-              exp1 < exp2 ? monthTrendInc++ : monthTrendDesc++;
-            }
-            monthTrendInc > monthTrendDesc ? trendInc++ : trendDesc++;
-
-            monthArray.length = 0;
-            monthArray.push(item);
-          }
-        });
+          monthTrendInc > monthTrendDesc ? trendInc++ : trendDesc++;
+        }
+        /*
+                sortDataArray.forEach((item: any) => {
+                
+                  let result: boolean = getMonthwiseData(startDate, item.Date);
+                  if (result) {
+                    monthArray.push(item);
+                    console.log(monthArray);
+                  }
+                  else {
+                    startDate = item.Date;
+                    let monthTrendInc: number = 0;
+                    let monthTrendDesc: number = 0;
+                    for (let cnt = 0; cnt < monthArray.length; cnt++) {
+                      var exp1 = Number.parseInt(monthArray[cnt][dataTrainedModel.ProportionalityField]);
+                      var exp2 = Number.parseInt(monthArray[cnt + 1][dataTrainedModel.ProportionalityField]);
+                      exp1 < exp2 ? inc++ : dec++;
+                      exp1 < exp2 ? monthTrendInc++ : monthTrendDesc++;
+                    }
+                    monthTrendInc > monthTrendDesc ? trendInc++ : trendDesc++;
+        
+                    monthArray.length = 0;
+                    monthArray.push(item);
+                  }
+                });
+                */
         var proportionality = inc > dec ? 'Directly' : 'Inversely';
         let overAllTrending: string = trendInc > trendDesc ? "Directly" : "Inversely";
 
@@ -235,15 +254,20 @@ class CsvFileParsing {
   };
 }
 
-const getMonthwiseData = function (startDate: any, currentDate: any) {
-  var res: boolean = moment(startDate).isSame(currentDate, 'month');
-  if (res) {
-    return true;
+const getMonthwiseData = function (index: number, startDate: Date | string, objKey: string, dataArray: any[]) {
+  const monthArray: Array<any> = [];
+  //var res: boolean = true
+  for (let cnt = index; cnt < dataArray.length; cnt++) {
+    var currentStat: any = dataArray[cnt];
+    var currentDate = currentStat[objKey];
+    var res: boolean = moment(startDate).isSame(currentDate, 'month');
+    if (cnt == dataArray.length) break;
+    if (res) monthArray.push(dataArray[cnt])
+    else return monthArray;
   }
-  else {
-    return false;
-  }
+
 }
+
 
 const csvFileParsing: CsvFileParsing = new CsvFileParsing();
 
