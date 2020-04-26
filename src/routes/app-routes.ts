@@ -5,6 +5,9 @@ const homeRoutes = [
 // commit from shubhangip branch...
 const userMasterRoutes = [
   ['api/user-master/add-user', 'user-master#createUser', 'post'],
+  ['api/user-master/get-users', 'user-master#getUsers', 'get'],
+  ['api/user-master/get-user', 'user-master#getUser', 'get'],
+  ['api/user-master/update-user', 'user-master#updateUser', 'post'],
 ];
 const parseCsvRoutes: string[][] = [
   ['api/parse-csv/parse', 'parse-csv#parseCsv', 'get'],

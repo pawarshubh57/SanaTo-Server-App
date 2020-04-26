@@ -1,7 +1,9 @@
 import fs from 'fs';
 import { momentExtensions } from '..';
 import moment from 'moment';
-import { DataTrainedModel } from '../../models';
+var _: any = require('lodash');
+import { DataTrainedModel, DateField } from '../../models';
+
 class CsvFileParsing {
   public parseCsv = function (filePath: string, delimiter: string): Array<any> | boolean {
     const splitRegExp = new RegExp(`\\${delimiter}(?!(?<=(?:^|,)\\s*"(?:[^"]|""|\\\\")*,)(?:[^"]|""|\\\\")*"\\s*(?:,|$))`, 'ig');

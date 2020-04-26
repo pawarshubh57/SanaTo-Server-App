@@ -19,14 +19,18 @@ const UserMasterSchema: Mongoose.Schema<UserMaster> = new Mongoose.Schema(
       type: String,
       required: true,
     },
+    ContactNumber: {
+      type: String,
+      required: true
+    },
     Email: {
       type: String,
       required: true,
-      unique: true,
-      trim: true,
-      validate: function(v: string) {
-        return isEmail(v);
-      },
+      // unique: true,
+      // trim: true,
+      // validate: function (v: string) {
+      //   return isEmail(v);
+      // },
     },
     Username: {
       type: String,
@@ -36,9 +40,10 @@ const UserMasterSchema: Mongoose.Schema<UserMaster> = new Mongoose.Schema(
     },
     Password: {
       type: String,
-      required: true,
+      // required: true,
       minlength: 6,
     },
+    /*
     Tokens: [
       {
         access: {
@@ -52,26 +57,28 @@ const UserMasterSchema: Mongoose.Schema<UserMaster> = new Mongoose.Schema(
       },
     ],
   },
+  
   {
     usePushEach: true,
   }
-);
+  */
+  });
 
-UserMasterSchema.virtual('FullName').get(function() {
+UserMasterSchema.virtual('FullName').get(function () {
   return `${this.FirstName} ${this.LastName}`;
 });
 
-UserMasterSchema.methods.toJSON = function() {
+UserMasterSchema.methods.toJSON = function () {
   var userMaster = this;
   var userObject = userMaster.toObject();
   return userObject;
 };
 
-UserMasterSchema.pre('save', function(next: Function) {
+UserMasterSchema.pre('save', function (next: Function) {
   var userMaster: any = this;
   if (userMaster.isModified('Password')) {
-    bcryptJs.genSalt(10, function(err: any, salt: Number) {
-      bcryptJs.hash(userMaster.Password, salt, function(e: any, hash: any) {
+    bcryptJs.genSalt(10, function (err: any, salt: Number) {
+      bcryptJs.hash(userMaster.Password, salt, function (e: any, hash: any) {
         userMaster.Password = hash;
         next();
       });
@@ -81,7 +88,7 @@ UserMasterSchema.pre('save', function(next: Function) {
   }
 });
 
-UserMasterSchema.methods.generateAuthToken = function() {
+UserMasterSchema.methods.generateAuthToken = function () {
   var userMaster = this;
   var access = 'auth';
   var token = Jwt.sign(
@@ -102,7 +109,7 @@ UserMasterSchema.methods.generateAuthToken = function() {
   });
 };
 
-UserMasterSchema.statics.findByCredentials = function(userName: string, password: string) {
+UserMasterSchema.statics.findByCredentials = function (userName: string, password: string) {
   var UserMaster = sanaToService.UserMaster.getModel();
   return UserMaster.findOne({
     Username: userName,
@@ -112,7 +119,7 @@ UserMasterSchema.statics.findByCredentials = function(userName: string, password
     }
 
     return new Promise((resolve, reject) => {
-      bcryptJs.compare(password, user.Password, function(err: any, res: any) {
+      bcryptJs.compare(password, user.Password, function (err: any, res: any) {
         if (err) reject(err);
         if (res) {
           resolve(user);
@@ -124,7 +131,7 @@ UserMasterSchema.statics.findByCredentials = function(userName: string, password
   });
 };
 
-UserMasterSchema.statics.toJSON = function(userMaster: any) {
+UserMasterSchema.statics.toJSON = function (userMaster: any) {
   var userObject = userMaster.toObject();
   var thisUser = _.pick(userObject, ['_id', 'userName', 'email', 'tokens']);
   return thisUser;
@@ -134,6 +141,7 @@ class UserMaster extends Mongoose.Document {
   public UserId: Mongoose.Types.ObjectId | string;
   public FirstName: string;
   public LastName: string;
+  public ContactNumber: string;
   public Email: string;
   public Username: string;
   public Password: string;
