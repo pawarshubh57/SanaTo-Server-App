@@ -9,7 +9,7 @@ const userName = 'yogeshs';
 const password = 'yogeshs';
 const mongoHost = 'localhost';
 const databaseName = 'sanatodb';
-const mongoDbUrl = `mongodb://${mongoHost}:${mongoPort}/?ssl=false`;
+const mongoDbUrl = `mongodb://${mongoHost}:${mongoPort}/?ssl=true`;
 
 var crtPath = resolve(__dirname, '../', 'certificates');
 const mongoDbOpt: Mongoose.ConnectionOptions = {
