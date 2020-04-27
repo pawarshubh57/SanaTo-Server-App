@@ -7,7 +7,7 @@ var evaluate: any = require("evaluatex");
 
 const writeFile = function (request: Request, response: Response) {
   let input: { dateFormat: string, name: string } = request.body;
-  var header = { 0: "RowId", 1: "Name", 3: "CardNo", 4: "ContactNo", 5: "RandomNumber", 6: "Date", 7: "Time" };
+  var header = { 0: "RowId", 1: "Name", 3: "CardNo", 4: "ContactNo", 5: "RandomNumber", 6: "Date", 7: "Time", 8: "DateTime" };
   var filePath = path.join(__dirname, "../created-files", "sample.txt");
   if (!fs.existsSync(filePath)) {
     fs.mkdirSync(filePath);
@@ -20,6 +20,7 @@ const writeFile = function (request: Request, response: Response) {
     var randomValue = Math.floor((Math.random() * 200) + cnt);
     var dateTime = momentExtensions.randomDateBetweenWithTime({ startDate, endDate });
     let momentInstance = moment(dateTime);
+    let dateWithTime: string = momentInstance.format(input.dateFormat) + " " + momentInstance.format("hh:mm:ss A");
     let row = {
       RowId: (cnt + 1),
       Name: input.name,
@@ -27,14 +28,16 @@ const writeFile = function (request: Request, response: Response) {
       ContactNo: "(123) 456-4567",
       RandomNumber: randomValue,
       Date: momentInstance.format(input.dateFormat),
-      Time: momentInstance.format("hh:mm:ss A"),// "hh:mm:ss A"
+      Time: momentInstance.format("hh:mm:ss A"), // "hh:mm:ss A"
+      DateTime: dateWithTime
     };
     var r = Object.values(row);
     data.push(r);
   }
   let fileContent = data.join("\n");
-  fs.writeFileSync(filePath, fileContent); 
-  response.status(200).send("Ok").end();
+  fs.writeFileSync(filePath, fileContent);
+  response.sendFile(filePath);
+  // response.status(200).send("Ok").end();
 }
 
 const evaluatex = function (request: Request, response: Response) {

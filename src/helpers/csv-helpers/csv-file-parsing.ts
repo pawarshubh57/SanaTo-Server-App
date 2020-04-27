@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { momentExtensions } from '..';
 import moment from 'moment';
-var _ = require('lodash');
+var _: any = require('lodash');
 import { DataTrainedModel, DateField } from '../../models';
 
 class CsvFileParsing {
@@ -73,14 +73,14 @@ class CsvFileParsing {
    *
    * @memberof CsvFileParsing
    */
-  public calculateProportionality = function (dataTrainedModel: DataTrainedModel): {} {
+  public calculateProportionality = function (dataArray: any[], dateTimeField: string, dateTimeFormat: string, proportionalityField: string): {} {
     try {
-      const dataArray: Array<any> | boolean = this.parseCsv(dataTrainedModel.FileStatics.CompletePath, dataTrainedModel.CsvDelimiter);
-      if (typeof dataArray === "boolean") return { msg: "Unable to process provided csv file", fileDetails: dataTrainedModel.FileStatics };
+      // const dataArray: Array<any> | boolean = this.parseCsv(dataTrainedModel.FileStatics.CompletePath, dataTrainedModel.CsvDelimiter);
+      // if (typeof dataArray === "boolean") return { msg: "Unable to process provided csv file", fileDetails: dataTrainedModel.FileStatics };
 
       let processedArray: any[] = dataArray.sort(function (a: any, b: any): any {
-        var momentA = moment(a[dataTrainedModel.TrainingDetails.DateField], dataTrainedModel.TrainingDetails.DateFormat);
-        var momentB = moment(b[dataTrainedModel.TrainingDetails.DateField], dataTrainedModel.TrainingDetails.DateFormat);
+        var momentA = moment(a[dateTimeField], a[dateTimeFormat] || "");
+        var momentB = moment(b[dateTimeField], a[dateTimeFormat] || "");
         if (momentA > momentB) return 1;
         return -1;
       });
@@ -92,15 +92,15 @@ class CsvFileParsing {
       let dec: number = 0;
       for (let cnt = 0; cnt < processedArray.length; cnt++) {
         let element: any = processedArray[cnt];
-        let date: string = element[dataTrainedModel.TrainingDetails.DateField];
+        let date: string = element[dateTimeField];
         let monthDays: { daysInMonth: number, daysArray: any[] } =
-          momentExtensions.daysOfMonth(cnt, date, dataTrainedModel.TrainingDetails.DateField, processedArray);
-        cnt += (monthDays.daysInMonth) - 1;
+          momentExtensions.daysOfMonth(cnt, date, dateTimeField, processedArray);
+        cnt += (monthDays.daysArray.length) - 1;
         let monthTrendInc: number = 0;
         let monthTrendDesc: number = 0;
         for (let i = 0; i < monthDays.daysArray.length - 1; i++) {
-          var exp1 = Number.parseInt(monthDays.daysArray[i][dataTrainedModel.ProportionalityField]);
-          var exp2 = Number.parseInt(monthDays.daysArray[i + 1][dataTrainedModel.ProportionalityField]);
+          var exp1 = Number.parseInt(monthDays.daysArray[i][proportionalityField]);
+          var exp2 = Number.parseInt(monthDays.daysArray[i + 1][proportionalityField]);
           exp1 < exp2 ? inc++ : dec++;
           exp1 < exp2 ? monthTrendInc++ : monthTrendDesc++;
         }
@@ -129,7 +129,6 @@ class CsvFileParsing {
     if (typeof dataArray === "boolean") return { msg: "Unable to process provided csv file", fileDetails: dataTrainedModel.FileStatics };
 
     let processType = dataTrainedModel.TrainingDetails.ProcessType;
-    let dateFormat = dataTrainedModel.TrainingDetails.DateFormat;
 
     if (processType === "numericOnly") {
       let numericLimits: { baseField: string, lowerLimit: number, upperLimit: number } = {
@@ -173,101 +172,38 @@ class CsvFileParsing {
     }
     // This is sample commented line after switching git branch...
     // branch name: yogeshs 
-    // Shubhangi will start on following conditions...
-    if (processType === "dateTime") { }
+    // Shubhangi will start on following conditions...    
+    let args = {
+      delimiter: dataTrainedModel.CsvDelimiter,
+      baseField: dataTrainedModel.TrainingDetails.BaseField,
+      dateFormat: dataTrainedModel.TrainingDetails.DateFormat,
+      timeFormat: dataTrainedModel.TrainingDetails.TimeFormat,
+      dateField: dataTrainedModel.TrainingDetails.DateField,
+      timeField: dataTrainedModel.TrainingDetails.TimeField
+    };
+    if (processType === "dateTime") {
+      let proportionality: any = this.calculateProportionality(dataArray, args.dateField, args.dateFormat, dataTrainedModel.ProportionalityField);
+      return proportionality;
+    }
     if (processType === "dateOnly") {
-      /* Sort Array list date wise */
-
-      let dateField: string = dataTrainedModel.TrainingDetails.BaseField;
-      try {
-        let sortDataArray: any[] = _.sortBy(dataArray, function (o: any) {
-          return moment(o[dateField]).format(dataTrainedModel.TrainingDetails.DateFormat);
-        });
-
-        let inc: number = 0;
-        let dec: number = 0;
-        let trendInc: number = 0;
-        let trendDesc: number = 0;
-        for (let cnt = 0; cnt < sortDataArray.length; cnt++) {
-          let element: any = sortDataArray[cnt];
-          let date: string = element[dataTrainedModel.TrainingDetails.BaseField];
-          let monthDays: any[] =
-            getMonthwiseData(cnt, date, dataTrainedModel.TrainingDetails.BaseField, sortDataArray);
-          cnt += monthDays.length - 1;
-          let monthTrendInc: number = 0;
-          let monthTrendDesc: number = 0;
-          for (let i = 0; i < monthDays.length - 1; i++) {
-            var exp1 = Number.parseInt(monthDays[i][dataTrainedModel.ProportionalityField]);
-            var exp2 = Number.parseInt(monthDays[i + 1][dataTrainedModel.ProportionalityField]);
-            exp1 < exp2 ? inc++ : dec++;
-            exp1 < exp2 ? monthTrendInc++ : monthTrendDesc++;
-          }
-          monthTrendInc > monthTrendDesc ? trendInc++ : trendDesc++;
-        }
-        /*
-                sortDataArray.forEach((item: any) => {
-                
-                  let result: boolean = getMonthwiseData(startDate, item.Date);
-                  if (result) {
-                    monthArray.push(item);
-                    console.log(monthArray);
-                  }
-                  else {
-                    startDate = item.Date;
-                    let monthTrendInc: number = 0;
-                    let monthTrendDesc: number = 0;
-                    for (let cnt = 0; cnt < monthArray.length; cnt++) {
-                      var exp1 = Number.parseInt(monthArray[cnt][dataTrainedModel.ProportionalityField]);
-                      var exp2 = Number.parseInt(monthArray[cnt + 1][dataTrainedModel.ProportionalityField]);
-                      exp1 < exp2 ? inc++ : dec++;
-                      exp1 < exp2 ? monthTrendInc++ : monthTrendDesc++;
-                    }
-                    monthTrendInc > monthTrendDesc ? trendInc++ : trendDesc++;
-        
-                    monthArray.length = 0;
-                    monthArray.push(item);
-                  }
-                });
-                */
-        var proportionality = inc > dec ? 'Directly' : 'Inversely';
-        let overAllTrending: string = trendInc > trendDesc ? "Directly" : "Inversely";
-
-        return { proportionality, overAllTrending };
-      }
-      catch (ex) {
-        console.log(ex);
-        return { ex };
-      }
-
+      let proportionality: any = this.calculateProportionality(dataArray, args.dateField, args.dateFormat, dataTrainedModel.ProportionalityField);
+      return proportionality;
     }
     if (processType === "dateAndTime") {
-      let args = {
-        delimiter: dataTrainedModel.CsvDelimiter,
-        dateFormat: dataTrainedModel.TrainingDetails.DateFormat,
-        timeFormat: dataTrainedModel.TrainingDetails.TimeFormat,
-        dateField: dataTrainedModel.TrainingDetails.DateField,
-        timeField: dataTrainedModel.TrainingDetails.TimeField
-      };
-      console.log(args);
+      const dateCustomField: string = "dateTime-customField";
+      const dateCustomFormat: string = "dateTime-customFormat";
+      dataArray.forEach(function (da: any) {
+        let dateTime: string = da[args.dateField].trim() + " " + da[args.timeField].trim();
+        let dateTimeFormat: string = args.dateFormat.trim().concat(" ", args.timeFormat).trim();
+        da[dateCustomField] = dateTime;
+        da[dateCustomFormat] = dateTimeFormat;
+      });
+      let proportionality: any = this.calculateProportionality(dataArray, dateCustomField, dateCustomFormat, dataTrainedModel.ProportionalityField);
+      return proportionality;
     }
     return "Ok";
   };
-}
-
-const getMonthwiseData = function (index: number, startDate: Date | string, objKey: string, dataArray: any[]) {
-  const monthArray: Array<any> = [];
-  //var res: boolean = true
-  for (let cnt = index; cnt < dataArray.length; cnt++) {
-    var currentStat: any = dataArray[cnt];
-    var currentDate = currentStat[objKey];
-    var res: boolean = moment(startDate).isSame(currentDate, 'month');
-    if (cnt == dataArray.length) break;
-    if (res) monthArray.push(dataArray[cnt])
-    else return monthArray;
-  }
-
-}
-
+};
 
 const csvFileParsing: CsvFileParsing = new CsvFileParsing();
 
